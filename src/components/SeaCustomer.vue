@@ -1,49 +1,42 @@
 <template>
-  <div class="myCustomer">
+  <div class="seaCustomer">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/customer/my' }">客户</el-breadcrumb-item>
-        <el-breadcrumb-item>我的客户</el-breadcrumb-item>
+        <el-breadcrumb-item>公海客户</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="filter">
       <div class="l">
-        <el-select v-model="value" placeholder="全部">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-        </el-select>
-        <el-select v-model="value" placeholder="排序">
+        <el-select v-model="value" placeholder="所有客户状态">
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
         <el-input placeholder="搜索关键词" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
       </div>
       <div class="r">
-        <el-button type="primary" icon="plus">新建客户</el-button>
-        <el-button type="primary">导入</el-button>
+        <span class="select-count">已选中 <b>0</b> 个客户</span>
+        <el-button type="primary">转移客户</el-button>
       </div>
     </div>
     <div class="main">
-      <el-table :data="tableData">
+      <el-table :data="tableData" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column prop="name" label="平台名称"></el-table-column>
         <el-table-column prop="name" label="地区"></el-table-column>
         <el-table-column prop="name" label="平台负责人"></el-table-column>
-        <el-table-column prop="name" label="电话"></el-table-column>
-        <el-table-column prop="name" label="微信号"></el-table-column>
-        <el-table-column prop="name" label="状态"></el-table-column>
-        <el-table-column prop="name" label="客户类型"></el-table-column>
+        <el-table-column prop="name" label="前对接人"></el-table-column>
+        <el-table-column prop="name" label="客户状态"></el-table-column>
         <el-table-column prop="name" label="备注"></el-table-column>
-        <el-table-column prop="name" label="创建时间"></el-table-column>
-        <el-table-column prop="name" label="操作时间"></el-table-column>
         <el-table-column prop="name" label="操作" width="180">
           <template scope="scope">
-            <el-button size="small" @click="detail(scope.$index, scope.row)">详情</el-button>
-            <el-button size="small" type="danger" @click="addFollow(scope.$index, scope.row)">添加跟进</el-button>
+            <el-button size="small" type="danger" @click="checkFollow(scope.$index, scope.row)">查看跟进</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="pagination">
       <el-pagination @current-change="currentChange" :current-page="currentPage" :page-size="pageSize"
-        layout="total, prev, pager, next, jumper" :total="total">
+                     layout="total, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
   </div>
@@ -52,7 +45,7 @@
 <script>
 
   export default {
-    name: 'myCustomer',
+    name: 'seaCustomer',
     data () {
       return {
         tableData: [{
@@ -98,14 +91,15 @@
     methods: {
       search () {},
       detail () {},
-      addFollow () {},
-      currentChange () {}
+      checkFollow () {},
+      currentChange () {},
+      handleSelectionChange () {}
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .myCustomer{
+  .seaCustomer{
     .breadcrumb{
       padding: 20px;
       background: #fbfbfb;
@@ -130,6 +124,14 @@
       }
       .r{
         float: right;
+        .select-count{
+          font-size: 14px;
+          color: #333333;
+          margin-right: 10px;
+          b{
+            color: #4db3ff;
+          }
+        }
       }
     }
     .main{

@@ -5,16 +5,15 @@
     </div>
     <el-row class="main">
       <el-col :sm="4" class="aside">
-        <el-menu default-active="201" :default-openeds="defaultOpeneds" :unique-opened="uniqueOpened">
-          <template v-for="(item, index) in userMenus">
-            <el-menu-item :index="item.id+''" v-if="item.menus == null" :key="item.id">
-              <i :class="item.icon"></i>
-              <router-link :to="item.path || '/'">{{item.name}}</router-link>
+        <el-menu :default-active="defaultActive" :router="router" :default-openeds="defaultOpeneds" :unique-opened="uniqueOpened">
+          <template v-for="item in userMenus">
+            <el-menu-item :index="item.id+''" v-if="item.menus == null" :key="item.id" :route="{path:item.path || '/'}">
+              <i :class="item.icon"></i>{{item.name}}
             </el-menu-item>
-            <el-submenu :index="index+1+''" v-else :key="item.id">
+            <el-submenu :index="item.id+''" v-else :key="item.id">
               <template slot="title"><i :class="item.icon"></i>{{item.name}}</template>
-              <el-menu-item v-for="(i, idx) in item.menus" :index="i.id+''" :key="i.id">
-                <router-link :to="i.path || '/'">{{i.name}}</router-link>
+              <el-menu-item v-for="i in item.menus" :index="i.id+''" :key="i.id" :route="{path:i.path || '/'}">
+                {{i.name}}
               </el-menu-item>
             </el-submenu>
           </template>
@@ -28,14 +27,18 @@
 </template>
 
 <script>
+
   import Vue from 'vue'
   import router from '@/router'
+
   export default {
     name: 'index',
     data () {
       return {
         uniqueOpened: true,
-        defaultOpeneds: ['2'],
+        router: true,
+        defaultActive: '',
+        defaultOpeneds: [],
         userMenus: [],
         allMenus: [{
           id: 2,
@@ -87,19 +90,40 @@
     computed: {},
     methods: {
       tokenWrong () {
+        router.push('/no-resource')
         this.$alert('登录超时，请重新登录！', '提示', {
           confirmButtonText: '确定',
           callback: action => {
             router.push('/login')
           }
         })
+      },
+      menuSelect () {
+        let path = this.$route.path.split('/')
+        this.allMenus.forEach(value => {
+          if (value.path.split('/')[1] === path[1]) {
+            this.defaultOpeneds = [value.id + '']
+            if (value.menus.length >= 0) {
+              value.menus.forEach(val => {
+                if (val.path.split('/')[2] === path[2]) {
+                  this.defaultActive = val.id + ''
+                }
+              })
+            }
+          }
+        })
       }
     },
+    watch: {
+      '$route': 'menuSelect'
+    },
+    created () {
+      this.menuSelect()
+    },
     beforeRouteEnter (to, from, next) {
-      Vue.http.get('/v2/crm/userinfo').then(function (res) {
+      Vue.http.get('/v2/aut/crm/userinfo').then(function (res) {
         console.log('token 登录', res)
         next(vm => {
-//          console.log(res.body.data.userMenus)
           vm.userMenus = res.body.data.userMenus
         })
       }).catch(function (res) {
@@ -126,7 +150,8 @@
         font-size: 20px;
         margin: 0;
         padding-top: 20px;
-        text-align: center;
+        text-align: left;
+        padding-left: 20px;
         color: #eeeeee;
       }
     }
