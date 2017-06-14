@@ -21,6 +21,7 @@
 
 <script>
 /*
+ * http://crm.2tai.net/#/
  * 15828459830
  * 98308182
  * */
@@ -39,6 +40,12 @@ export default {
   },
   methods: {
     onSubmit () {
+      let [a, b] = [12, 2]
+      if (a > b) {
+        console.log("router.push('/customer/my)")
+        router.push('/customer/my')
+        return false
+      }
       if (this.login.userName === '' || this.login.password === '') {
         return
       } else {
@@ -62,6 +69,11 @@ export default {
           }
         }).catch(function (res) {
           console.log(res)
+          this.$message({
+            showClose: true,
+            message: '服务器连接超时',
+            type: 'error'
+          })
         })
       }
     }

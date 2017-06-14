@@ -8,6 +8,7 @@ import SeaCustomer from '@/components/SeaCustomer'
 import MySea from '@/components/MySea'
 import Application from '@/components/Application'
 import NoResource from '@/components/NoResource'
+import MyCustomerAdd from '@/components/MyCustomerAdd'
 
 Vue.use(Router)
 
@@ -37,6 +38,11 @@ export default new Router({
           path: '/customer/my',
           name: 'myCustomer',
           component: MyCustomer
+        },
+        {
+          path: '/customer/my/add',
+          name: 'myCustomerAdd',
+          component: MyCustomerAdd
         },
         {
           path: '/customer/team',

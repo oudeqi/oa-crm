@@ -2,7 +2,7 @@
   <div class="application">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/customer/my' }">客户</el-breadcrumb-item>
+        <el-breadcrumb-item>客户</el-breadcrumb-item>
         <el-breadcrumb-item>申请处理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>

@@ -6,7 +6,7 @@
     <el-row class="main">
       <el-col :sm="4" class="aside">
         <el-menu :default-active="defaultActive" :router="router" :default-openeds="defaultOpeneds" :unique-opened="uniqueOpened">
-          <template v-for="item in userMenus">
+          <template v-for="item in allMenus">
             <el-menu-item :index="item.id+''" v-if="item.menus == null" :key="item.id" :route="{path:item.path || '/'}">
               <i :class="item.icon"></i>{{item.name}}
             </el-menu-item>
@@ -59,10 +59,10 @@
             name: '公海客户'
           }, {
             id: 204,
-            path: '/customer/mySea',
+            path: '/customer/my-sea',
             name: '我的公海'
           }, {
-            id: 204,
+            id: 205,
             path: '/customer/application',
             name: '申请处理'
           }]
@@ -121,17 +121,19 @@
       this.menuSelect()
     },
     beforeRouteEnter (to, from, next) {
-      Vue.http.get('/v2/aut/crm/userinfo').then(function (res) {
-        console.log('token 登录', res)
-        next(vm => {
-          vm.userMenus = res.body.data.userMenus
-        })
-      }).catch(function (res) {
-        console.log('token 登录出错', res)
-        next(vm => {
-          vm.tokenWrong()
-        })
-      })
+      console.log(Vue)
+      next()
+//      Vue.http.get('/v2/aut/crm/userinfo').then(function (res) {
+//        console.log('token 登录', res)
+//        next(vm => {
+//          vm.userMenus = res.body.data.userMenus
+//        })
+//      }).catch(function (res) {
+//        console.log('token 登录出错', res)
+//        next(vm => {
+//          vm.tokenWrong()
+//        })
+//      })
     }
   }
 </script>
