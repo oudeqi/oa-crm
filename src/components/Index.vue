@@ -27,7 +27,11 @@
 </template>
 
 <script>
-
+  /*
+  * http://crm.2tai.net/#/
+  * 15828459830
+  * 98308182
+  * */
   import Vue from 'vue'
   import router from '@/router'
 
