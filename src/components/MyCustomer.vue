@@ -2,7 +2,7 @@
   <div class="myCustomer">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/customer/my' }">客户</el-breadcrumb-item>
+        <el-breadcrumb-item>客户</el-breadcrumb-item>
         <el-breadcrumb-item>我的客户</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -17,7 +17,9 @@
         <el-input placeholder="搜索关键词" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
       </div>
       <div class="r">
-        <el-button type="primary" icon="plus">新建客户</el-button>
+        <el-button type="primary" icon="plus">
+          <router-link :to="{ path: '/customer/my/add' }">新建客户</router-link>
+        </el-button>
         <el-button type="primary">导入</el-button>
       </div>
     </div>
@@ -130,6 +132,10 @@
       }
       .r{
         float: right;
+        a{
+          color: inherit;
+          text-decoration: none;
+        }
       }
     }
     .main{
