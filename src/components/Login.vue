@@ -27,6 +27,7 @@
  * */
 import Vue from 'vue'
 import router from '@/router'
+import {token, setToken} from '../const'
 export default {
   name: 'login',
   data () {
@@ -40,12 +41,12 @@ export default {
   },
   methods: {
     onSubmit () {
-      let [a, b] = [12, 2]
-      if (a > b) {
-        console.log("router.push('/customer/my)")
-        router.push('/customer/my')
-        return false
-      }
+//      let [a, b] = [12, 2]
+//      if (a > b) {
+//        console.log("router.push('/customer/my)")
+//        router.push('/customer/my')
+//        return false
+//      }
       if (this.login.userName === '' || this.login.password === '') {
         return
       } else {
@@ -62,9 +63,8 @@ export default {
               type: 'error'
             })
           } else {
-            console.log(46465)
-            localStorage.setItem('token', res.body.data.token)
-            Vue.http.headers.common['Authorization'] = res.body.data.token
+            setToken(res.body.data.token)
+            Vue.http.headers.common['Authorization'] = token
             router.push('/')
           }
         }).catch(function (res) {

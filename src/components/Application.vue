@@ -15,10 +15,10 @@
       </div>
       <div class="r">
         <span class="select-count">已选中 <b>0</b> 个客户，处理为</span>
-        <el-button type="primary">拒绝</el-button>
         <el-button type="primary">一个月</el-button>
         <el-button type="primary">两个月</el-button>
         <el-button type="primary">三个月</el-button>
+        <el-button type="danger">拒绝</el-button>
       </div>
     </div>
     <div class="main">
@@ -29,12 +29,12 @@
         <el-table-column prop="name" label="负责人"></el-table-column>
         <el-table-column prop="name" label="地区"></el-table-column>
         <el-table-column prop="name" label="申请时间"></el-table-column>
-        <el-table-column prop="name" label="操作及状态" width="300">
+        <el-table-column prop="name" label="操作及状态" min-width="250">
           <template scope="scope">
-            <el-button size="small" type="danger" @click="checkFollow(scope.$index, scope.row)">一个月</el-button>
-            <el-button size="small" type="danger" @click="checkFollow(scope.$index, scope.row)">两个月</el-button>
-            <el-button size="small" type="danger" @click="checkFollow(scope.$index, scope.row)">三个月</el-button>
-            <el-button size="small" type="danger" @click="checkFollow(scope.$index, scope.row)">拒绝</el-button>
+            <el-button type="text" @click="checkFollow(scope.$index, scope.row)">一个月</el-button>
+            <el-button type="text" @click="checkFollow(scope.$index, scope.row)">两个月</el-button>
+            <el-button type="text" @click="checkFollow(scope.$index, scope.row)">三个月</el-button>
+            <el-button size="mini" type="warning" @click="checkFollow(scope.$index, scope.row)">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>

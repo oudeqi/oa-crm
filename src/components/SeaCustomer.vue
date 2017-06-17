@@ -15,7 +15,7 @@
       </div>
       <div class="r">
         <span class="select-count">已选中 <b>0</b> 个客户</span>
-        <el-button type="primary">转移客户</el-button>
+        <el-button type="danger">转移客户</el-button>
       </div>
     </div>
     <div class="main">
@@ -27,9 +27,9 @@
         <el-table-column prop="name" label="前对接人"></el-table-column>
         <el-table-column prop="name" label="客户状态"></el-table-column>
         <el-table-column prop="name" label="备注"></el-table-column>
-        <el-table-column prop="name" label="操作" width="180">
+        <el-table-column prop="name" label="操作">
           <template scope="scope">
-            <el-button size="small" type="danger" @click="checkFollow(scope.$index, scope.row)">查看跟进</el-button>
+            <el-button type="text" @click="checkFollow(scope.$index, scope.row)">查看跟进</el-button>
           </template>
         </el-table-column>
       </el-table>

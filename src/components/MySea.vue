@@ -25,9 +25,9 @@
         <el-table-column prop="name" label="备注"></el-table-column>
         <el-table-column prop="name" label="创建时间"></el-table-column>
         <el-table-column prop="name" label="操作时间"></el-table-column>
-        <el-table-column prop="name" label="操作及状态" width="180">
+        <el-table-column prop="name" label="操作及状态">
           <template scope="scope">
-            <el-button size="small" type="danger" @click="checkFollow(scope.$index, scope.row)">申请重领</el-button>
+            <el-button type="text" @click="checkFollow(scope.$index, scope.row)">申请重领</el-button>
           </template>
         </el-table-column>
       </el-table>
