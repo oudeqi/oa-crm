@@ -3,7 +3,7 @@
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>客户</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/customer/my' }">我的客户</el-breadcrumb-item>
+        <!--<el-breadcrumb-item :to="{ path: '/customer/my' }">我的客户</el-breadcrumb-item>-->
         <el-breadcrumb-item>
           <span @click="back">客户详情</span>
         </el-breadcrumb-item>

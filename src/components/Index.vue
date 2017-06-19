@@ -180,9 +180,10 @@
       Vue.http.get('/v2/aut/crm/userinfo').then(function (res) {
         console.log('token 登录', res)
         if (res.body.errMessage) {
-          next(vm => {
-            router.push('/login')
-          })
+          router.push('/login')
+//          next(vm => {
+//            router.push('/login')
+//          })
         } else {
           next(vm => {
             vm.userMenus = res.body.data.userMenus

@@ -37,7 +37,7 @@
         <el-table-column prop="remarks" label="备注" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="createDate" label="创建时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="lastOperTime" label="操作时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="name" label="操作" min-width="130">
+        <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
             <el-button type="text" @click="openModal(scope)">添加跟进</el-button>
@@ -91,7 +91,7 @@
         keywords: '',
         loading: true,
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 15,
         total: null,
         pageCount: 0,
         isModalOpen: false,

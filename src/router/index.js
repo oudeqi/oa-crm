@@ -11,6 +11,7 @@ import NoResource from '@/components/NoResource'
 import MyCustomerAdd from '@/components/MyCustomerAdd'
 import MyCustomerDetail from '@/components/MyCustomerDetail'
 import MyCustomerDetailEdit from '@/components/MyCustomerDetailEdit'
+import TeamCustomerDetail from '@/components/TeamCustomerDetail'
 
 Vue.use(Router)
 
@@ -50,6 +51,11 @@ export default new Router({
           path: '/customer/my/detail/:id/edit',
           name: 'myCustomerDetailEdit',
           component: MyCustomerDetailEdit
+        },
+        {
+          path: '/customer/team/detail/:id',
+          name: 'teamCustomerDetail',
+          component: TeamCustomerDetail
         },
         {
           path: '/customer/my/add',

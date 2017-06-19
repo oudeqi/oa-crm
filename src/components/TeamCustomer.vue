@@ -9,7 +9,7 @@
     <div class="filter">
       <div class="l">
         <el-cascader placeholder="请选择部门" expand-trigger="hover" :options="teamOptions"
-                     v-model="teamMember"
+                     v-model="teamMember" @change="handleTeamChange"
                      :props="{value:'id',label:'name',children:'member'}">
         </el-cascader>
         <el-select v-model="state" placeholder="所有客户状态" @change="stateChange">
@@ -25,8 +25,8 @@
         <el-input placeholder="搜索关键词" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
       </div>
       <div class="r">
-        <span class="select-count">已选中 <b>0</b> 个客户</span>
-        <el-button type="danger">转移客户</el-button>
+        <span class="select-count">已选中 <b>{{selectedTable.length}}</b> 个客户</span>
+        <el-button type="danger" @click="openMoveModal">转移客户</el-button>
       </div>
     </div>
     <div class="main">
@@ -42,10 +42,10 @@
         <el-table-column prop="contactName" label="对接人"></el-table-column>
         <el-table-column prop="createDate" label="创建时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="lastOperTime" label="操作时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="name" label="操作" min-width="130">
+        <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
-            <el-button type="text" @click="checkFollow(scope.$index, scope.row)">查看跟进</el-button>
+            <el-button type="text" @click="checkFollow(scope)">查看跟进</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -55,6 +55,36 @@
                      layout="total, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    <el-dialog @close="reload" :title="modalTitle" v-model="isModalOpen" :close-on-click-modal="closeOnClickModal">
+      <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+      <el-tree class="filter-tree" :data="teamOptions2" :props="defaultOption" ref="tree" empty-text="数据没有加载成功"
+               highlight-current accordion @node-click="handleItemClick" :filter-node-method="filterNode">
+      </el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="isModalOpen = false">取 消</el-button>
+        <el-button type="primary" @click="moveCustomer">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog @close="reload" title="查看跟进" v-model="isFollowModalOpen" :close-on-click-modal="closeOnClickModal">
+      <p class="no-follow" v-if="follows.length===0">暂无跟进信息</p>
+      <ul class="follow-info" v-else>
+        <li v-for="(item, index) in follows" :key="index">
+          <div class="item-head">
+            <img :src="item.headIconUrl" alt="">
+          </div>
+          <div class="item-body">
+            <p class="item-body-tit">
+              <span class="name">{{item.nickName || '无名氏'}}</span>
+              <span class="date">{{item.createDate | date('YYYY-MM-DD HH:mm:ss')}}</span>
+            </p>
+            <p class="item-body-content">{{item.content}}</p>
+          </div>
+        </li>
+      </ul>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="isFollowModalOpen = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -68,20 +98,55 @@
     data () {
       return {
         tableData: [],
+        follows: [],
         teamOptions: [],
         teamId: null,
         memberId: null,
         state: null,
         keywords: '',
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 15,
         total: null,
-        pageCount: 0
+        pageCount: 0,
+        selectedTable: [],
+        isModalOpen: false,
+        isFollowModalOpen: false,
+        closeOnClickModal: false,
+        filterText: '',
+        teamOptions2: [],
+        defaultOption: {
+          children: 'member',
+          label: 'name'
+        },
+        selectedMember: {}
+      }
+    },
+    watch: {
+      filterText (val) {
+        this.$refs.tree.filter(val)
       }
     },
     computed: {
-      teamMember () {
-        return [this.teamId, this.memberId]
+      teamMember: {
+        get () {
+          return [this.teamId, this.memberId]
+        },
+        set (newValue) {
+          console.log(newValue)
+          this.teamId = newValue[0]
+          if (newValue[1]) {
+            this.memberId = newValue[1]
+          } else {
+            this.memberId = -1
+          }
+        }
+      },
+      modalTitle () {
+        if (this.selectedMember.id) {
+          return '转移客户 ' + '给 ' + this.selectedMember.name
+        } else {
+          return '转移客户'
+        }
       }
     },
     methods: {
@@ -92,13 +157,19 @@
             id: -1,
             name: '全部'
           }]
+          let teamOptions2 = []
           res.body.data.forEach(value => {
             let member = [{
               id: -1,
               name: '全部'
             }]
+            let member2 = []
             value.users.forEach(v => {
               member.push({
+                id: v.uid,
+                name: v.nickName
+              })
+              member2.push({
                 id: v.uid,
                 name: v.nickName
               })
@@ -108,8 +179,14 @@
               name: value.nickName,
               member: member
             })
+            teamOptions2.push({
+              id: value.id,
+              name: value.nickName,
+              member: member2
+            })
           })
           this.teamOptions = teamOptions
+          this.teamOptions2 = teamOptions2
         }).catch(res => {
           console.log('获取团队列表失败', res)
         })
@@ -168,7 +245,7 @@
       },
       detail (scope) {
         console.log(scope)
-        router.push({name: 'myCustomerDetail', params: {id: scope.row.id}})
+        router.push({name: 'teamCustomerDetail', params: {id: scope.row.id}})
       },
       pageIndexChange (val) {
         this.currentPage = val
@@ -182,9 +259,81 @@
         this.currentPage = 1
         this.getTableData()
       },
-      checkFollow () {},
-      currentChange () {},
-      handleSelectionChange () {}
+      checkFollow (scope) {
+        console.log(scope.row)
+        this.$http.get('/v1/aut/crm/customer/logs', {
+          params: {
+            id: scope.row.id
+          }
+        }).then(res => {
+          console.log('查看跟进', res)
+          if (res.body.errMessage) {
+            this.$message.error(res.body.errMessage)
+          } else {
+            this.follows = res.body.data
+            this.isFollowModalOpen = true
+          }
+        }).catch(res => {
+          console.log('查看跟进失败', res)
+          this.$message.error('服务器繁忙')
+        })
+      },
+      handleSelectionChange (value) {
+        this.selectedTable = value
+      },
+      reload () {
+        this.getTableData()
+      },
+      handleTeamChange () {
+        this.currentPage = 1
+        this.getTableData()
+        console.log(this.teamMember)
+      },
+      openMoveModal () {
+        if (this.selectedTable.length === 0) {
+          this.$message.error('请选择客户！')
+        } else {
+          this.isModalOpen = true
+        }
+      },
+      filterNode (value, data) {
+        if (!data.member && data.name.indexOf(value) !== -1) {
+          return true
+        } else {
+          return false
+        }
+      },
+      handleItemClick (item) {
+        if (!item.member) {
+          this.selectedMember = item
+        } else {
+          this.selectedMember = {}
+        }
+      },
+      moveCustomer () {
+        console.log(this.uid)
+        if (!this.selectedMember.id) {
+          this.$message.error('请选择员工！')
+        } else {
+          this.$http.post('/v1/aut/crm/customer/change', {
+            uid: this.selectedMember.id,
+            customers: this.selectedTable
+          }).then(res => {
+            if (res.body.errMessage) {
+              this.$message.error(res.body.errMessage)
+            } else {
+              this.$message({
+                message: '恭喜你，操作成功！',
+                type: 'success'
+              })
+              this.isModalOpen = false
+              this.getTableData()
+            }
+          }).catch(res => {
+            this.$message.error('服务器繁忙！')
+          })
+        }
+      }
     },
     created () {
       this.getTeamOptions()
@@ -194,7 +343,62 @@
 </script>
 
 <style lang="scss" scoped>
+  @import "../scss/_mixins.scss";
+  .no-follow{
+    text-align: center;
+    color: #ddd;
+    margin: 0;
+    font-size: 15px;
+  }
+  .follow-info{
+    padding-left: 20px;
+    margin-top: 30px;
+    list-style: none;
+    margin: 0;
+    max-height: 450px;
+    overflow-y: auto;
+    li{
+      margin-bottom: 20px;
+      @include clearfix();
+      .item-head{
+        float: left;
+        width: 50px;
+        height: 50px;
+        background-color: #eee;
+        img{
+          max-width: 100%;
+          max-height: 100%;
+        }
+      }
+      .item-body{
+        margin-left: 60px;
+        min-height: 60px;
+        .item-body-tit{
+          margin: 0;
+          padding: 0;
+          .name{
+            margin-right: 20px;
+            font-size: 15px;
+          }
+          .date{
+            font-size: 14px;
+            color: #ccc;
+          }
+        }
+        .item-body-content{
+          margin: 0;
+          padding-top: 8px;
+          line-height: 1.3;
+        }
+      }
+    }
+  }
   .teamCustomer{
+    .filter-tree{
+      margin-top: 14px;
+      max-height: 400px;
+      overflow-y: scroll;
+    }
     .breadcrumb{
       padding: 20px;
       background: #fbfbfb;

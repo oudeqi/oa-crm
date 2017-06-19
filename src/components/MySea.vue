@@ -8,32 +8,44 @@
     </div>
     <div class="filter">
       <div class="l">
-        <el-select v-model="value" placeholder="所有客户状态">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        <el-select v-model="state" placeholder="所有客户状态" @change="stateChange">
+          <el-option label="全部" value="0"></el-option>
+          <el-option label="新建" value="1"></el-option>
+          <el-option label="拒绝" value="2"></el-option>
+          <el-option label="未回应" value="3"></el-option>
+          <el-option label="初步了解" value="4"></el-option>
+          <el-option label="意向" value="5"></el-option>
+          <el-option label="重点维护" value="6"></el-option>
+          <el-option label="签约" value="7"></el-option>
         </el-select>
         <el-input placeholder="搜索关键词" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
       </div>
     </div>
     <div class="main">
       <el-table :data="tableData">
-        <el-table-column prop="name" label="平台名称"></el-table-column>
-        <el-table-column prop="name" label="地区"></el-table-column>
-        <el-table-column prop="name" label="平台负责人"></el-table-column>
-        <el-table-column prop="name" label="电话"></el-table-column>
-        <el-table-column prop="name" label="微信号"></el-table-column>
-        <el-table-column prop="name" label="客户类型"></el-table-column>
-        <el-table-column prop="name" label="备注"></el-table-column>
-        <el-table-column prop="name" label="创建时间"></el-table-column>
-        <el-table-column prop="name" label="操作时间"></el-table-column>
-        <el-table-column prop="name" label="操作及状态">
+        <el-table-column prop="customerName" label="平台名称"></el-table-column>
+        <el-table-column prop="cityCodeName" label="地区"></el-table-column>
+        <el-table-column prop="mainPerson" label="平台负责人"></el-table-column>
+        <el-table-column prop="mainPhoneNumber" label="电话"></el-table-column>
+        <el-table-column prop="mainWeChat" label="微信号"></el-table-column>
+        <el-table-column prop="signType" label="客户类型" :formatter="customerTypeFormatter" ></el-table-column>
+        <el-table-column prop="remarks" label="备注" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="createDate" label="创建时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="lastOperTime" label="操作时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="操作及状态">
           <template scope="scope">
-            <el-button type="text" @click="checkFollow(scope.$index, scope.row)">申请重领</el-button>
+            <el-button type="text" @click="regain(scope)" v-if="scope.row.applyStatus==0">申请重领</el-button>
+            <span class="status" v-if="scope.row.applyStatus==1">待审核</span>
+            <span class="status" v-if="scope.row.applyStatus==2">一个月</span>
+            <span class="status" v-if="scope.row.applyStatus==3">两个月</span>
+            <span class="status" v-if="scope.row.applyStatus==4">三个月</span>
+            <span class="status" v-if="scope.row.applyStatus==5">被拒绝</span>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div class="pagination">
-      <el-pagination @current-change="currentChange" :current-page="currentPage" :page-size="pageSize"
+    <div class="pagination" v-show="pageCount>1">
+      <el-pagination @current-change="pageIndexChange" :current-page="currentPage" :page-size="pageSize"
                      layout="total, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
@@ -41,56 +53,101 @@
 </template>
 
 <script>
-
+  import moment from 'moment'
   export default {
     name: 'mySea',
     data () {
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        options: [{
-          value: '1',
-          label: '黄金糕'
-        }, {
-          value: '2',
-          label: '双皮奶'
-        }, {
-          value: '3',
-          label: '蚵仔煎'
-        }, {
-          value: '4',
-          label: '龙须面'
-        }, {
-          value: '5',
-          label: '北京烤鸭'
-        }],
-        value: '',
+        tableData: [],
+        state: null,
         keywords: '',
         currentPage: 1,
-        pageSize: 20,
-        total: 200
+        pageSize: 15,
+        total: null,
+        pageCount: 0
       }
     },
     methods: {
-      search () {},
-      detail () {},
-      checkFollow () {},
-      currentChange () {}
+      stateChange () {
+        this.currentPage = 1
+        this.getTableData()
+      },
+      getTableData () {
+        this.loading = false
+        this.$http.get('/v1/aut/crm/my/public/customer', {
+          params: {
+            pageSize: this.pageSize,
+            pageIndex: this.currentPage,
+            search: this.keywords,
+            status: this.state
+          }
+        }).then(res => {
+          console.log('获取我的客户列表', res)
+          this.loading = false
+          if (res.body.errMessage) {
+            this.$message.error(res.body.errMessage)
+          } else {
+            this.tableData = res.body.data.data
+            this.total = res.body.data.rowCount
+            this.pageCount = res.body.data.pageCount
+          }
+        }).catch(res => {
+          console.log('获取我的客户列表异常', res)
+          this.loading = false
+          this.$message.error('服务器繁忙！')
+        })
+      },
+      search () {
+        this.currentPage = 1
+        this.getTableData()
+      },
+      pageIndexChange (val) {
+        this.currentPage = val
+        this.getTableData()
+      },
+      customerTypeFormatter (row) {
+        if (row.signType === 1) {
+          return '站长'
+        } else if (row.signType === 2) {
+          return '代理商'
+        } else if (row.signType === 0) {
+          return '无'
+        }
+      },
+      dateFormat (row) {
+        if (row.createDate) {
+          return moment(row.createDate).format('YYYY-MM-DD HH:mm:ss')
+        } else {
+          return ''
+        }
+      },
+      regain (scope) {
+        this.$confirm('确认申请重领该客户?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log(scope)
+          this.$http.post('/v1/aut/customer/apply', {
+            customerId: scope.row.id
+          }).then((res) => {
+            if (res.body.errMessage) {
+              this.$message.error(res.body.errMessage)
+            } else {
+              this.$message({
+                message: '恭喜你，操作成功',
+                type: 'success'
+              })
+              this.getTableData()
+            }
+          }).catch((res) => {
+            this.$message.error('服务器繁忙！')
+          })
+        }).catch(() => {})
+      }
+    },
+    created () {
+      this.getTableData()
     }
   }
 </script>
@@ -135,8 +192,8 @@
       padding: 0 20px;
       overflow: auto;
       margin-top: 15px;
-      .noData{
-        text-align: center;
+      .status{
+        color: #666;
       }
     }
     .pagination{

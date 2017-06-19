@@ -2,7 +2,7 @@
  * Created by oudeqi on 2017/6/17.
  */
 
-const env = 'dev 0'
+const env = 'dev'
 let token = localStorage.getItem('token')
 
 const setToken = function (tk) {
@@ -17,7 +17,7 @@ const removeToken = function () {
 
 const appHost = function () {
   if (env === 'dev') {
-    return 'http://192.168.10.32:8080'
+    return 'http://192.168.10.43:8080'
   } else {
     return 'http://crm.2tai.net'
   }

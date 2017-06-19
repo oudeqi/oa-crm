@@ -27,9 +27,7 @@
           <li><span>微信号码：</span><span>{{customerInfo.subWeChat || '无'}}</span></li>
           <li><span>手机号码：</span><span>{{customerInfo.subPhoneNumber || '无'}}</span></li>
         </ul>
-        <div class="btn-warpper">
-          <el-button type="info" icon="edit" @click="customerEdit">编辑客户</el-button>
-        </div>
+
       </div>
       <div class="follow-info">
         <h3>跟进信息</h3>
@@ -79,7 +77,7 @@
 
 <script>
   import router from '../router'
-//  import moment from 'moment'
+  //  import moment from 'moment'
   export default {
     name: 'myCustomerDetail',
     data () {
@@ -188,90 +186,90 @@
 
   @import "../scss/_mixins.scss";
 
- .detail{
-   .breadcrumb{
-     padding: 20px;
-     background: #fbfbfb;
-   }
-   .main{
-     padding-left: 0;
-     padding-right: 20px;
-     margin-top: 20px;
-     color: #333333;
-     font-size: 15px;
-     @include clearfix();
-     ul{
-       list-style: none;
-       margin: 0;
-       padding: 0;
-     }
-     .btn-warpper{
-       padding: 10px 20px 20px;
-     }
-     h3{
-       background-color: #fbfbfb;
-       margin: 0;
-       padding: 15px 20px;
-       color: #444;
-       font-size: 18px;
-     }
-     .base-info{
-       float: left;
-       width: 30%;
-       padding-right: 8%;
-       padding-left: 7%;
-       ul{
-         padding-bottom: 10px;
-         padding-left: 20px;
-         padding-top: 20px;
-         li{
-           margin-bottom: 15px;
-         }
-       }
-     }
-     .follow-info{
-       float: left;
-       width: 55%;
-       ul{
-         padding-left: 20px;
-         margin-top: 30px;
-         li{
-           margin-bottom: 20px;
-           @include clearfix();
-           .item-head{
-             float: left;
-             width: 50px;
-             height: 50px;
-             background-color: #eee;
-             img{
-               max-width: 100%;
-               max-height: 100%;
-             }
-           }
-           .item-body{
-             margin-left: 60px;
-             min-height: 60px;
-             .item-body-tit{
-               margin: 0;
-               padding: 0;
-               .name{
-                 margin-right: 20px;
-                 font-size: 15px;
-               }
-               .date{
-                 font-size: 14px;
-                 color: #ccc;
-               }
-             }
-             .item-body-content{
-               margin: 0;
-               padding-top: 8px;
-               line-height: 1.3;
-             }
-           }
-         }
-       }
-     }
-   }
- }
+  .detail{
+    .breadcrumb{
+      padding: 20px;
+      background: #fbfbfb;
+    }
+    .main{
+      padding-left: 0;
+      padding-right: 20px;
+      margin-top: 20px;
+      color: #333333;
+      font-size: 15px;
+      @include clearfix();
+      ul{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .btn-warpper{
+        padding: 10px 20px 20px;
+      }
+      h3{
+        background-color: #fbfbfb;
+        margin: 0;
+        padding: 15px 20px;
+        color: #444;
+        font-size: 18px;
+      }
+      .base-info{
+        float: left;
+        width: 30%;
+        padding-right: 8%;
+        padding-left: 7%;
+        ul{
+          padding-bottom: 10px;
+          padding-left: 20px;
+          padding-top: 20px;
+          li{
+            margin-bottom: 15px;
+          }
+        }
+      }
+      .follow-info{
+        float: left;
+        width: 55%;
+        ul{
+          padding-left: 20px;
+          margin-top: 30px;
+          li{
+            margin-bottom: 20px;
+            @include clearfix();
+            .item-head{
+              float: left;
+              width: 50px;
+              height: 50px;
+              background-color: #eee;
+              img{
+                max-width: 100%;
+                max-height: 100%;
+              }
+            }
+            .item-body{
+              margin-left: 60px;
+              min-height: 60px;
+              .item-body-tit{
+                margin: 0;
+                padding: 0;
+                .name{
+                  margin-right: 20px;
+                  font-size: 15px;
+                }
+                .date{
+                  font-size: 14px;
+                  color: #ccc;
+                }
+              }
+              .item-body-content{
+                margin: 0;
+                padding-top: 8px;
+                line-height: 1.3;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 </style>
