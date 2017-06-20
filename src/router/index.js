@@ -12,6 +12,14 @@ import MyCustomerAdd from '@/components/MyCustomerAdd'
 import MyCustomerDetail from '@/components/MyCustomerDetail'
 import MyCustomerDetailEdit from '@/components/MyCustomerDetailEdit'
 import TeamCustomerDetail from '@/components/TeamCustomerDetail'
+import StaffList from '@/components/StaffList'
+import StationList from '@/components/StationList'
+import PhoneAppointment from '@/components/PhoneAppointment'
+import PlatformAppointment from '@/components/PlatformAppointment'
+import VisitAppointment from '@/components/VisitAppointment'
+import StaffDetail from '@/components/StaffDetail'
+import StaffEdit from '@/components/StaffEdit'
+import StaffAdd from '@/components/StaffAdd'
 
 Vue.use(Router)
 
@@ -81,7 +89,48 @@ export default new Router({
           path: '/customer/application',
           name: 'application',
           component: Application
+        },
+        {
+          path: '/setup/staff',
+          name: 'staffList',
+          component: StaffList
+        },
+        {
+          path: '/setup/staff/add',
+          name: 'staffAdd',
+          component: StaffAdd
+        },
+        {
+          path: '/setup/staff/detail/:id',
+          name: 'staffDetail',
+          component: StaffDetail
+        },
+        {
+          path: '/setup/staff/detail/:id/edit',
+          name: 'staffEdit',
+          component: StaffEdit
+        },
+        {
+          path: '/setup/station',
+          name: 'stationList',
+          component: StationList
+        },
+        {
+          path: '/appointment/phone',
+          name: 'phoneAppointment',
+          component: PhoneAppointment
+        },
+        {
+          path: '/appointment/platform',
+          name: 'platformAppointment',
+          component: PlatformAppointment
+        },
+        {
+          path: '/appointment/visit',
+          name: 'visitAppointment',
+          component: VisitAppointment
         }
+
       ]
     },
     { path: '*', redirect: '/' }

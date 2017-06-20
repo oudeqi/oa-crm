@@ -23,25 +23,18 @@
             <el-dropdown-item command="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <!--<div class="media-left">-->
-          <!--<img :src="headIconUrl" alt="">-->
-        <!--</div>-->
-        <!--<div class="media-body">-->
-          <!--<p class="hello">你好，</p>-->
-          <!--<h4 class="name">{{nickName}}</h4>-->
-        <!--</div>-->
       </div>
     </div>
     <el-row class="main">
       <el-col :sm="4" class="aside">
-        <el-menu :default-active="defaultActive" :router="router" :default-openeds="defaultOpeneds" :unique-opened="uniqueOpened">
+        <el-menu :default-active="defaultActive" :default-openeds="defaultOpeneds" :router="true" :unique-opened="true">
           <template v-for="item in userMenus">
-            <el-menu-item :index="item.id+''" v-if="item.menus == null" :key="item.id" :route="{path:item.path || '/'}">
+            <el-menu-item :index="item.id" v-if="item.menus == null" :key="item.id" :route="{path:item.path || '/'}">
               <i :class="item.icon"></i>{{item.name}}
             </el-menu-item>
-            <el-submenu :index="item.id+''" v-else :key="item.id">
+            <el-submenu :index="item.id" v-else :key="item.id">
               <template slot="title"><i :class="item.icon"></i>{{item.name}}</template>
-              <el-menu-item v-for="i in item.menus" :index="i.id+''" :key="i.id" :route="{path:i.path || '/'}">
+              <el-menu-item v-for="i in item.menus" :index="i.id" :key="i.id" :route="{path:i.path || '/'}">
                 {{i.name}}
               </el-menu-item>
             </el-submenu>
@@ -69,59 +62,12 @@
     name: 'index',
     data () {
       return {
-        uniqueOpened: true,
-        router: true,
-        defaultActive: '',
+        defaultActive: null,
         defaultOpeneds: [],
         userMenus: [],
         headIconUrl: '',
         nickName: '',
-        phoneNumber: '',
-        allMenus: [{
-          id: 2,
-          name: '客户',
-          path: '/customer',
-          icon: 'el-icon-message',
-          menus: [{
-            id: 201,
-            path: '/customer/my',
-            name: '我的客户'
-          }, {
-            id: 202,
-            path: '/customer/team',
-            name: '团队客户'
-          }, {
-            id: 203,
-            path: '/customer/sea',
-            name: '公海客户'
-          }, {
-            id: 204,
-            path: '/customer/my-sea',
-            name: '我的公海'
-          }, {
-            id: 205,
-            path: '/customer/application',
-            name: '申请处理'
-          }]
-        }, {
-          id: 3,
-          name: '预约',
-          path: '/appointment',
-          icon: 'el-icon-message',
-          menus: [{
-            id: 301,
-            path: '/appointment/phone',
-            name: '电话预约'
-          }, {
-            id: 302,
-            path: '/appointment/platform',
-            name: '平台预约'
-          }, {
-            id: 303,
-            path: '/appointment/visit',
-            name: '回访记录'
-          }]
-        }]
+        phoneNumber: ''
       }
     },
     computed: {},
@@ -137,16 +83,18 @@
       },
       menuSelect () {
         let path = this.$route.path.split('/')
-        this.allMenus.forEach(value => {
-          if (value.path.split('/')[1] === path[1]) {
-            this.defaultOpeneds = [value.id + '']
-            if (value.menus.length >= 0) {
+        console.log(path)
+        console.log(this.userMenus)
+        this.userMenus.forEach(value => {
+          if (!!value.path && value.path.split('/')[1] === path[1]) {
+            if (value.menus.length > 0) {
               value.menus.forEach(val => {
-                if (val.path.split('/')[2] === path[2]) {
-                  this.defaultActive = val.id + ''
+                if (!!val.path && val.path.split('/')[2] === path[2]) {
+                  this.defaultActive = val.id
                 }
               })
             }
+            this.defaultOpeneds = [value.id]
           }
         })
       },
@@ -171,25 +119,27 @@
     watch: {
       '$route': 'menuSelect'
     },
-    created () {
-      this.menuSelect()
-    },
     beforeRouteEnter (to, from, next) {
-//      console.log(Vue)
-//      next()
       Vue.http.get('/v2/aut/crm/userinfo').then(function (res) {
         console.log('token 登录', res)
         if (res.body.errMessage) {
           router.push('/login')
-//          next(vm => {
-//            router.push('/login')
-//          })
         } else {
           next(vm => {
-            vm.userMenus = res.body.data.userMenus
             vm.headIconUrl = res.body.data.headIconUrl
             vm.nickName = res.body.data.nickName
             vm.phoneNumber = res.body.data.phoneNumber
+            let userMenus = res.body.data.userMenus
+            userMenus.forEach(value => {
+              value.id = value.id + ''
+              if (!!value.menus && value.menus.length >= 0) {
+                value.menus.forEach((val) => {
+                  val.id = val.id + ''
+                })
+              }
+            })
+            vm.userMenus = userMenus
+            vm.menuSelect()
           })
         }
       }).catch(function (res) {

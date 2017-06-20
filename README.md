@@ -23,23 +23,24 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 /*
 
-/v2/aut/crm/user/add post 新增用户
+// TODO /v2/aut/crm/user/add post 新增用户
 {
-  "phoneNumber": "15828459830",
-  "password": "",
-  "nickName": "尚丹丹",
-  "headIconUrl": "http://cdn.2tai.net/app/crm_head_defuat.png",
+  "phoneNumber": "15828459830",*
+  "password": "",*
+  "nickName": "尚丹丹",*
+  "headIconUrl": "http://cdn.2tai.net/app/crm_head_defuat.png",*
   "groupId": 1,
   "deptId": 0,
   "level": 0,
   "superiorId": 0,
   "createDate": null,
-  "joinDate": null,
+  "joinDate": null,*
   "leaveDate": null,
-  "roleId": 0
+  "roleId": 0,
+  "baseSalary" : int *
 }
 
-/v2/aut/crm/user/update post 更新用户
+// TODO /v2/aut/crm/user/update post 更新用户
 {
   "uid": 1,
   "phoneNumber": "15828459830",
@@ -56,11 +57,17 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "roleId": 0
 }
 
-/v2/aut/crm/user/list get 获取用户列表
+// TODO /v2/aut/crm/user/list get 获取用户列表
 
-/v2/aut/crm/user/details?id=1 get 获取用户详情
+// TODO /v2/aut/crm/user/details?id=1 get 获取用户详情
 
-/v2/aut/crm/customer/list/master get 获取站长列表
+
+
+
+
+
+
+// TODO /v2/aut/crm/customer/list/master get 获取站长列表
 
 /v2/aut/crm/customer/update/master post 更新站长信息
 {
@@ -153,6 +160,11 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 /v2/aut/crm/sign/details?id=1 get 获取签约详情
 
+
+
+
+
+
 /v2/aut/crm/reservation/add post 新增预约
 {
   "customerId": 8,
@@ -194,9 +206,15 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "status": 0
 }
 
-/v2/aut/crm/reservation/list get 获取预约列表
+// TODO /v2/aut/crm/reservation/list get 获取预约列表
 
 /v2/aut/crm/reservation/details?id=1 get 获取预约详情
+
+
+
+
+
+
 
 /v2/aut/crm/reservation/visit/add reservationId post 添加回访记录
 {
@@ -214,11 +232,14 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 /v2/aut/crm/reservation/visit/list?reservationId=1 get 获取回访列表
 /v2/aut/crm/reservation/visit/details?id=1 get 获取回访详情
 
+
+
+
 /v2/crm/product/list get 获取产品列表
 
 /v2/crm/line/list get 获取线路列表
 
-/v2/crm/role/list get 获取角色列表
+// TODO /v2/crm/role/list get 获取角色列表
 
 /v2/crm/config/list/type 获取配置类型列表
 

@@ -79,7 +79,6 @@
 
 <script>
   import router from '../router'
-//  import moment from 'moment'
   export default {
     name: 'myCustomerDetail',
     data () {
