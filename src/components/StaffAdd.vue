@@ -26,6 +26,12 @@
             <el-form-item label="电话号码">
               <el-input v-model="staffInfo.phoneNumber" placeholder="请输入电话号码"></el-input>
             </el-form-item>
+            <el-form-item label="初始密码">
+              <el-input v-model="staffInfo.password" placeholder="请输入初始密码"></el-input>
+            </el-form-item>
+            <el-form-item label="基本薪资">
+              <el-input v-model.number="staffInfo.baseSalary" placeholder="请输入整数"></el-input>
+            </el-form-item>
             <el-form-item label="入职时间">
               <el-date-picker v-model="staffInfo.joinDate" align="right" type="date" placeholder="选择日期"></el-date-picker>
             </el-form-item>
@@ -51,7 +57,15 @@
           nickName: null,
           phoneNumber: null,
           joinDate: null,
-          roleId: null
+          roleId: null,
+          password: null,
+          groupId: 0,
+          deptId: 0,
+          level: 0,
+          superiorId: 0,
+          createDate: null,
+          leaveDate: null,
+          baseSalary: null
         },
         role: []
       }
@@ -75,32 +89,42 @@
         })
       },
       submitForm () {
-        this.$confirm('确定要对员工信息进行编辑吗, 是否继续？', '提示', {
+        if (!this.staffInfo.nickName || !this.staffInfo.phoneNumber || !this.staffInfo.roleId || !this.staffInfo.joinDate || !this.staffInfo.password || !this.staffInfo.baseSalary) {
+          this.$message.error('信息填写不完整')
+          return false
+        }
+        this.$confirm('确定员工信息正确且完整, 是否继续？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          let [joinDate, leaveDate] = [this.staffInfo.joinDate, this.staffInfo.leaveDate]
-          if (this.staffInfo.joinDate) {
-            this.staffInfo.joinDate = new Date(joinDate).getTime()
+          let postInfo = {
+            headIconUrl: this.staffInfo.headIconUrl,
+            nickName: this.staffInfo.nickName,
+            phoneNumber: this.staffInfo.phoneNumber,
+            joinDate: new Date(this.staffInfo.joinDate).getTime(),
+            roleId: this.staffInfo.roleId,
+            password: this.staffInfo.password,
+            groupId: this.staffInfo.groupId,
+            deptId: this.staffInfo.deptId,
+            level: this.staffInfo.level,
+            superiorId: this.staffInfo.superiorId,
+            createDate: this.staffInfo.createDate,
+            leaveDate: this.staffInfo.leaveDate,
+            baseSalary: this.staffInfo.baseSalary * 100
           }
-          if (this.staffInfo.leaveDate) {
-            this.staffInfo.leaveDate = new Date(leaveDate).getTime()
-          }
-          console.log(this.staffInfo)
-          this.$http.post('/v2/aut/crm/user/update', this.staffInfo).then(res => {
-            console.log('修改用户信息', res)
+          this.$http.post('/v2/aut/crm/user/add', postInfo).then(res => {
+            console.log('添加员工', res)
             if (res.body.errMessage) {
               this.$message.error(res.body.errMessage)
             } else {
               this.$message({
-                message: '恭喜你，修改员工信息成功',
+                message: '恭喜你，添加员工成功',
                 type: 'success'
               })
-              this.getStaffInfo()
             }
           }).catch(res => {
-            console.log('修改员工信息失败', res)
+            console.log('添加员工失败', res)
             this.$message.error('服务器繁忙，请重试！')
           })
         }).catch(() => {})

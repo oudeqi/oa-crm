@@ -83,8 +83,8 @@
       },
       menuSelect () {
         let path = this.$route.path.split('/')
-        console.log(path)
-        console.log(this.userMenus)
+//        console.log(path)
+//        console.log(this.userMenus)
         this.userMenus.forEach(value => {
           if (!!value.path && value.path.split('/')[1] === path[1]) {
             if (value.menus.length > 0) {

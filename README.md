@@ -20,6 +20,11 @@ npm run build --report
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+/*
+  * http://crm.2tai.net/#/
+  * 15828459830 18989193368
+  * 98308182 88664422
+  * */
 
 /*
 
@@ -69,7 +74,9 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 // TODO /v2/aut/crm/customer/list/master get 获取站长列表
 
-/v2/aut/crm/customer/update/master post 更新站长信息
+// TODO /v1/aut/crm/customer/id 获取站长详情
+
+// TODO /v2/aut/crm/customer/update/master post 更新站长信息
 {
   "id": 3,
   "customerName": "今日广东",
@@ -165,24 +172,27 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 
 
-/v2/aut/crm/reservation/add post 新增预约
+// TODO /v2/aut/crm/reservation/add post 新增预约
 {
   "customerId": 8,
   "customerName": "昆山招聘",
+
   "serviceUid": 1,
   "serviceName": "尚丹丹",
-  "touristId": 0,
-  "touristName": null,
-  "touristPhone": 0,
-  "age": 0,
-  "number": 0,
-  "wechat": null,
-  "ticketNumber": 0,
-  "lineId": 0,
-  "tripDate": null,
+
+  "touristId": 0,//联系人份证号码
+  "touristName": null,//联系人名字
+  "touristPhone": 0,//联系人电话号码
+  "age": 0, //联系人年龄
+  "number": 0, 预约人数
+  "wechat": null, //联系微信号
+  "ticketBegin": 0, //票号区间开始
+  "ticketEnd": 0 //票号区间结束
+  "lineId": 0,//线路id
+  "tripDate": null, //旅行时间
   "remarks": null,
-  "type": 0,
-  "status": 0
+  "type": 0,// 电话预约 存在的类型
+  "status": 0 //预约的状态
 }
 
 /v2/aut/crm/reservation/update id post 更新预约
@@ -241,6 +251,9 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 // TODO /v2/crm/role/list get 获取角色列表
 
-/v2/crm/config/list/type 获取配置类型列表
+// TODO /v2/crm/config/list/type 获取配置类型列表
+
+/v2/aut/crm/customer/list/master/all?search="" 获取所有旅游站长列表
+
 
 */
