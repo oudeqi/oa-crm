@@ -11,6 +11,9 @@ import NoResource from '@/components/NoResource'
 import MyCustomerAdd from '@/components/MyCustomerAdd'
 import MyCustomerDetail from '@/components/MyCustomerDetail'
 import MyCustomerDetailEdit from '@/components/MyCustomerDetailEdit'
+import MyCustomerSigned from '@/components/MyCustomerSigned'
+import MyCustomerSignedFor from '@/components/MyCustomerSignedFor'
+import MyCustomerSignedAdd from '@/components/MyCustomerSignedAdd'
 import TeamCustomerDetail from '@/components/TeamCustomerDetail'
 import StaffList from '@/components/StaffList'
 import StationList from '@/components/StationList'
@@ -84,6 +87,21 @@ export default new Router({
           path: '/customer/my-sea',
           name: 'mySea',
           component: MySea
+        },
+        {
+          path: '/customer/signed',
+          name: 'myCustomerSigned',
+          component: MyCustomerSigned
+        },
+        {
+          path: '/customer/signed-for',
+          name: 'myCustomerSignedFor',
+          component: MyCustomerSignedFor
+        },
+        {
+          path: '/customer/signed-add',
+          name: 'myCustomerSignedAdd',
+          component: MyCustomerSignedAdd
         },
         {
           path: '/customer/application',
