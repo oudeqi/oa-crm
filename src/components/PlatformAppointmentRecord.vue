@@ -1,9 +1,10 @@
 <template>
-  <div class="phone-appointment">
+  <div class="platform-appointment">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>预约</el-breadcrumb-item>
-        <el-breadcrumb-item>电话预约</el-breadcrumb-item>
+        <el-breadcrumb-item>设置</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/appointment/platform' }">平台预约</el-breadcrumb-item>
+        <el-breadcrumb-item>回访记录</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="filter">
@@ -11,15 +12,13 @@
         <el-input placeholder="搜索关键词" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
       </div>
       <div class="r">
-        <el-button type="primary" icon="plus" @click="appointmentAdd">新增电话预约</el-button>
+        <el-button type="primary" icon="plus" @click="appointmentAdd">新增回访记录</el-button>
       </div>
     </div>
     <div class="main">
       <el-table :data="tableData">
         <el-table-column prop="serviceName" label="预约人" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="createDate" label="预约时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="remarks" label="备注" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="wechat" label="微信号" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
@@ -39,7 +38,7 @@
   import moment from 'moment'
   import router from '../router'
   export default {
-    name: 'phoneAppointment',
+    name: 'platformAppointmentRecord',
     data () {
       return {
         tableData: null,
@@ -53,15 +52,15 @@
     computed: {},
     methods: {
       getTableData () {
-        this.$http.get('/v2/aut/crm/reservation/list', {
+        this.$http.get('/v2/aut/crm/reservation/visit/list', {
           params: {
             pageSize: this.pageSize,
             pageIndex: this.currentPage,
             search: this.keywords,
-            type: 1
+            reservationId: this.$route.params.id
           }
         }).then(res => {
-          console.log('获取电话预约列表', res)
+          console.log('获取预约回访记录列表', res)
           if (res.body.errMessage) {
             this.$message.error(res.body.errMessage)
           } else {
@@ -70,7 +69,7 @@
             this.pageCount = res.body.data.pageCount
           }
         }).catch(res => {
-          console.log('获取电话预约列表异常', res)
+          console.log('获取预约回访记录列表异常', res)
           this.$message.error('服务器繁忙！')
         })
       },
@@ -91,10 +90,13 @@
       },
       detail (scope) {
         console.log(scope)
-        router.push({name: 'phoneAppointmentDetail', params: {id: scope.row.id}})
+        router.push({name: 'platformAppointmentDetail', params: {id: scope.row.id}})
+      },
+      visitRecord (scope) {
+        console.log(scope)
       },
       appointmentAdd () {
-        router.push({name: 'phoneAppointmentAdd'})
+        router.push({name: 'platformAppointmentAdd'})
       }
     },
     created () {
@@ -105,7 +107,7 @@
 
 <style lang="scss" scoped>
 
-  .phone-appointment{}
+  .platform-appointment{}
 
   .breadcrumb{
     padding: 20px;

@@ -110,6 +110,10 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "recommendId": 0
 }
 
+
+
+
+
 /v2/aut/crm/sign/add post 新增签约
 {
   "uid": 1,
@@ -195,7 +199,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "status": 0 //预约的状态
 }
 
-/v2/aut/crm/reservation/update id post 更新预约
+// TODO /v2/aut/crm/reservation/update id post 更新预约
 {
   "id": 1,
   "customerId": 8,
@@ -218,7 +222,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 // TODO /v2/aut/crm/reservation/list get 获取预约列表
 
-/v2/aut/crm/reservation/details?id=1 get 获取预约详情
+// TODO /v2/aut/crm/reservation/details?id=1 get 获取预约详情
 
 
 
@@ -239,7 +243,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "resrvationId": 1
 }
 
-/v2/aut/crm/reservation/visit/list?reservationId=1 get 获取回访列表
+// TODO /v2/aut/crm/reservation/visit/list?reservationId=1 get 获取回访列表
 /v2/aut/crm/reservation/visit/details?id=1 get 获取回访详情
 
 
@@ -247,13 +251,13 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 /v2/crm/product/list get 获取产品列表
 
-/v2/crm/line/list get 获取线路列表
+// TODO /v2/crm/line/list get 获取线路列表
 
 // TODO /v2/crm/role/list get 获取角色列表
 
 // TODO /v2/crm/config/list/type 获取配置类型列表
 
-/v2/aut/crm/customer/list/master/all?search="" 获取所有旅游站长列表
+// TODO /v2/aut/crm/customer/list/master/all?search="" 获取所有旅游站长列表
 
 
 */

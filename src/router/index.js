@@ -22,7 +22,13 @@ import StaffEdit from '@/components/StaffEdit'
 import StaffAdd from '@/components/StaffAdd'
 import StationDetail from '@/components/StationDetail'
 import StationEdit from '@/components/StationEdit'
-import AppointmentPlatformAdd from '@/components/AppointmentPlatformAdd'
+import PlatformAppointmentAdd from '@/components/PlatformAppointmentAdd'
+import PlatformAppointmentDetail from '@/components/PlatformAppointmentDetail'
+import PlatformAppointmentEdit from '@/components/PlatformAppointmentEdit'
+import PhoneAppointmentAdd from '@/components/PhoneAppointmentAdd'
+import PhoneAppointmentDetail from '@/components/PhoneAppointmentDetail'
+import PhoneAppointmentEdit from '@/components/PhoneAppointmentEdit'
+import PlatformAppointmentRecord from '@/components/PlatformAppointmentRecord'
 
 Vue.use(Router)
 
@@ -134,14 +140,44 @@ export default new Router({
           component: PhoneAppointment
         },
         {
+          path: '/appointment/phone/add',
+          name: 'phoneAppointmentAdd',
+          component: PhoneAppointmentAdd
+        },
+        {
+          path: '/appointment/phone/detail/:id',
+          name: 'phoneAppointmentDetail',
+          component: PhoneAppointmentDetail
+        },
+        {
+          path: '/appointment/phone/detail/:id/edit',
+          name: 'PhoneAppointmentEdit',
+          component: PhoneAppointmentEdit
+        },
+        {
           path: '/appointment/platform',
           name: 'platformAppointment',
           component: PlatformAppointment
         },
         {
           path: '/application/platform/add',
-          name: 'appointmentPlatformAdd',
-          component: AppointmentPlatformAdd
+          name: 'platformAppointmentAdd',
+          component: PlatformAppointmentAdd
+        },
+        {
+          path: '/application/platform/detail/:id',
+          name: 'platformAppointmentDetail',
+          component: PlatformAppointmentDetail
+        },
+        {
+          path: '/application/platform/detail/:id/edit',
+          name: 'platformAppointmentEdit',
+          component: PlatformAppointmentEdit
+        },
+        {
+          path: '/application/platform/record/:id',
+          name: 'platformAppointmentRecord',
+          component: PlatformAppointmentRecord
         },
         {
           path: '/appointment/visit',

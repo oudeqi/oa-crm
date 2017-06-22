@@ -16,14 +16,15 @@
     </div>
     <div class="main">
       <el-table :data="tableData">
-        <el-table-column prop="customerName" label="平台名称"></el-table-column>
-        <el-table-column prop="serviceName" label="预约人"></el-table-column>
-        <el-table-column prop="createDate" label="预约时间" :formatter="dateFormat"></el-table-column>
-        <el-table-column prop="remarks" label="备注"></el-table-column>
-        <el-table-column prop="wechat" label="微信号"></el-table-column>
+        <el-table-column prop="customerName" label="平台名称" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="serviceName" label="预约人" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="createDate" label="预约时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="remarks" label="备注" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="wechat" label="微信号" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
+            <el-button type="text" @click="visitRecord(scope)">回访记录</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,9 +93,14 @@
       },
       detail (scope) {
         console.log(scope)
+        router.push({name: 'platformAppointmentDetail', params: {id: scope.row.id}})
+      },
+      visitRecord (scope) {
+        console.log(scope)
+        router.push({name: 'platformAppointmentRecord', params: {id: scope.row.id}})
       },
       appointmentAdd () {
-        router.push({name: 'appointmentPlatformAdd'})
+        router.push({name: 'platformAppointmentAdd'})
       }
     },
     created () {
