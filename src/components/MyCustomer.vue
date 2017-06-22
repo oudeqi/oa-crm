@@ -78,7 +78,7 @@
 <script>
   import router from '../router'
   import moment from 'moment'
-  import {appHost, token} from '../const'
+  import {appHost, getToken} from '../const'
   export default {
     name: 'myCustomer',
     data () {
@@ -103,7 +103,7 @@
         },
         importAction: appHost() + '/v1/aut/crm/import/customer',
         importHeaders: {
-          Authorization: token
+          Authorization: getToken()
         },
         importLoading: false
       }

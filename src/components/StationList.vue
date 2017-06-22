@@ -34,6 +34,9 @@
 </template>
 
 <script>
+
+  import router from '../router'
+
   export default {
     name: 'stationList',
     data () {
@@ -79,6 +82,7 @@
       },
       detail (scope) {
         console.log(scope)
+        router.push({name: 'stationDetail', params: {id: scope.row.id}})
       }
     },
     created () {

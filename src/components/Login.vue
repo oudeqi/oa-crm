@@ -22,12 +22,12 @@
 <script>
 /*
  * http://crm.2tai.net/#/
- * 15828459830
- * 98308182
+ * 15828459830 18989193368
+ * 98308182 88664422
  * */
 import Vue from 'vue'
 import router from '@/router'
-import {token, setToken} from '../const'
+import {setToken, getToken} from '../const'
 export default {
   name: 'login',
   data () {
@@ -41,12 +41,6 @@ export default {
   },
   methods: {
     onSubmit () {
-//      let [a, b] = [12, 2]
-//      if (a > b) {
-//        console.log("router.push('/customer/my)")
-//        router.push('/customer/my')
-//        return false
-//      }
       if (this.login.userName === '' || this.login.password === '') {
         return
       } else {
@@ -64,7 +58,7 @@ export default {
             })
           } else {
             setToken(res.body.data.token)
-            Vue.http.headers.common['Authorization'] = token
+            Vue.http.headers.common['Authorization'] = getToken()
             router.push('/')
           }
         }).catch(function (res) {

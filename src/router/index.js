@@ -23,6 +23,9 @@ import VisitAppointment from '@/components/VisitAppointment'
 import StaffDetail from '@/components/StaffDetail'
 import StaffEdit from '@/components/StaffEdit'
 import StaffAdd from '@/components/StaffAdd'
+import StationDetail from '@/components/StationDetail'
+import StationEdit from '@/components/StationEdit'
+import AppointmentPlatformAdd from '@/components/AppointmentPlatformAdd'
 
 Vue.use(Router)
 
@@ -134,6 +137,16 @@ export default new Router({
           component: StationList
         },
         {
+          path: '/setup/station/detail/:id',
+          name: 'stationDetail',
+          component: StationDetail
+        },
+        {
+          path: '/setup/station/detail/:id/edit',
+          name: 'stationEdit',
+          component: StationEdit
+        },
+        {
           path: '/appointment/phone',
           name: 'phoneAppointment',
           component: PhoneAppointment
@@ -142,6 +155,11 @@ export default new Router({
           path: '/appointment/platform',
           name: 'platformAppointment',
           component: PlatformAppointment
+        },
+        {
+          path: '/application/platform/add',
+          name: 'appointmentPlatformAdd',
+          component: AppointmentPlatformAdd
         },
         {
           path: '/appointment/visit',

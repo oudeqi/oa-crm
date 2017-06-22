@@ -10,6 +10,9 @@
       <div class="l">
         <el-input placeholder="搜索关键词" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
       </div>
+      <div class="r">
+        <el-button type="primary" icon="plus" @click="appointmentAdd">新增电话预约</el-button>
+      </div>
     </div>
     <div class="main">
       <el-table :data="tableData">
@@ -88,7 +91,8 @@
       },
       detail (scope) {
         console.log(scope)
-      }
+      },
+      appointmentAdd () {}
     },
     created () {
       this.getTableData()

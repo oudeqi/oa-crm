@@ -16,6 +16,7 @@
         <ul>
           <li><span>员工姓名：</span><span>{{staffInfo.nickName}}</span></li>
           <li><span>电话号码：</span><span>{{staffInfo.phoneNumber}}</span></li>
+          <li><span>基本薪资：</span><span>{{staffInfo.baseSalary / 100}}</span></li>
           <li><span>入职时间：</span><span>{{staffInfo.joinDate | date('YYYY-MM-DD HH:mm:ss')}}</span></li>
           <li><span>离职时间：</span><span>{{staffInfo.leaveDate | date('YYYY-MM-DD HH:mm:ss')}}</span></li>
         </ul>

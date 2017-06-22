@@ -2,18 +2,18 @@
   <div class="edit">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>客户</el-breadcrumb-item>
-        <!--<el-breadcrumb-item :to="{ path: '/customer/my' }">我的客户</el-breadcrumb-item>-->
+        <el-breadcrumb-item>设置</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/setup/station' }">站长列表</el-breadcrumb-item>
         <el-breadcrumb-item>
-          <span @click="back">客户详情</span>
+          <span @click="back">站长详情</span>
         </el-breadcrumb-item>
-        <el-breadcrumb-item>编辑客户</el-breadcrumb-item>
+        <el-breadcrumb-item>编辑站长</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
     <div class="main">
       <div class="base-info">
-        <h3>基本信息</h3>
+        <h3>站长基本信息</h3>
         <div class="form-warpper">
           <el-form :model="customerInfo" label-width="100px" class="demo-ruleForm">
             <el-form-item label="平台名称">
@@ -41,6 +41,15 @@
                 <el-option v-for="item in states" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="联系人姓名">
+              <el-input v-model="customerInfo.subPerson"></el-input>
+            </el-form-item>
+            <el-form-item label="微信号">
+              <el-input v-model="customerInfo.subWeChat"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号">
+              <el-input v-model="customerInfo.subPhoneNumber"></el-input>
+            </el-form-item>
             <el-form-item label="备注信息">
               <el-input type="textarea" v-model="customerInfo.remarks"></el-input>
             </el-form-item>
@@ -48,17 +57,26 @@
         </div>
       </div>
       <div class="follow-info">
-        <h3>其他人联系信息</h3>
+        <h3>业务信息</h3>
         <div class="form-warpper">
           <el-form :model="customerInfo" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="联系人">
-              <el-input v-model="customerInfo.subPerson"></el-input>
+            <el-form-item label="旅游业务">
+              <el-select v-model="customerInfo.tripType" placeholder="请选择客户状态">
+                <el-option v-for="item in tripType" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="微信">
-              <el-input v-model="customerInfo.subWeChat"></el-input>
+            <el-form-item label="二台业务">
+              <el-select v-model="customerInfo.ertaiType" placeholder="请选择客户状态">
+                <el-option v-for="item in ertaiType" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="手机号">
-              <el-input v-model="customerInfo.subPhoneNumber"></el-input>
+            <el-form-item label="小说业务">
+              <el-select v-model="customerInfo.bookType" placeholder="请选择客户状态">
+                <el-option v-for="item in bookType" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="旅游转介绍人">
+              <el-input v-model="customerInfo.recommendName" placeholder="请输入转介绍人"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="info" @click="submitForm">保存</el-button>
@@ -74,10 +92,13 @@
 <script>
   import router from '../router'
   export default {
-    name: 'myCustomerDetailEdit',
+    name: 'stationEdit',
     data () {
       return {
         states: null,
+        tripType: [],
+        ertaiType: [],
+        bookType: [],
         customerInfo: {
           customerName: null,
           cityCode: [],
@@ -89,7 +110,11 @@
           remarks: null,
           subPerson: null,
           subWeChat: null,
-          subPhoneNumber: null
+          subPhoneNumber: null,
+          tripType: null,
+          ertaiType: null,
+          bookType: null,
+          recommendName: null
         },
         rules: {
           customerName: [
@@ -156,6 +181,46 @@
       handleCityCodeChange (value) {
         console.log(value)
       },
+      getBusiness () {
+        this.$http.get('/v2/crm/config/list/type')
+          .then((res) => {
+            console.log('获取业务列表', res)
+            if (res.body.errMessage) {
+              this.$message.error(res.body.errMessage)
+            } else {
+              this.tripType = res.body.data[0].data
+              this.ertaiType = res.body.data[1].data
+              this.bookType = res.body.data[2].data
+              this.tripType.unshift({
+                id: 0,
+                name: '无',
+                type: 'tripType'
+              })
+              this.ertaiType.unshift({
+                id: 0,
+                name: '无',
+                type: 'ertaiType'
+              })
+              this.bookType.unshift({
+                id: 0,
+                name: '无',
+                type: 'bookType'
+              })
+            }
+          })
+          .catch((res) => {
+            console.log('获取业务列表异常', res)
+            this.$message.error('服务器繁忙')
+          })
+      },
+      getCityList () {
+        this.$http.get('/v1/aut/crm/city/list').then(res => {
+          console.log('获取城市列表', res)
+          this.cityOptions = res.body.data
+        }).catch(res => {
+          console.log('获取城市列表失败', res)
+        })
+      },
       getCustomerInfo () {
         this.$http.get('/v1/aut/crm/customer/id', {
           params: {
@@ -175,21 +240,15 @@
           this.customerInfo.job = res.body.data.job
           this.customerInfo.status = res.body.data.status + ''
           this.customerInfo.remarks = res.body.data.remarks
+          this.customerInfo.tripType = res.body.data.tripType
+          this.customerInfo.ertaiType = res.body.data.ertaiType
+          this.customerInfo.bookType = res.body.data.bookType
         }).catch(res => {
           console.log('获取客户信息异常', res)
         })
       },
-      getCityList () {
-        this.$http.get('/v1/aut/crm/city/list').then(res => {
-          console.log('获取城市列表', res)
-          this.cityOptions = res.body.data
-          this.getCustomerInfo()
-        }).catch(res => {
-          console.log('获取城市列表失败', res)
-        })
-      },
       submitForm () {
-        this.$confirm('确定要对客户信息进行编辑吗, 是否继续？', '提示', {
+        this.$confirm('确定要对站长进行编辑吗, 是否继续？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -203,7 +262,7 @@
           } else {
             code = this.customerInfo.cityCode[0]
           }
-          this.$http.post('/v1/aut/crm/customer/update', {
+          this.$http.post('/v2/aut/crm/customer/update/master', {
             customerName: this.customerInfo.customerName,
             cityCode: code,
             mainPerson: this.customerInfo.mainPerson,
@@ -216,19 +275,23 @@
             subWeChat: this.customerInfo.subWeChat,
             status: this.customerInfo.status,
             signType: this.customerInfo.signType,
+            tripType: this.customerInfo.tripType,
+            ertaiType: this.customerInfo.ertaiType,
+            bookType: this.customerInfo.bookType,
+            recommendName: this.customerInfo.recommendName,
             id: this.$route.params.id
           }).then(res => {
-            console.log('修改用户信息', res)
+            console.log('修改站长信息', res)
             if (res.body.errMessage) {
               this.$message.error(res.body.errMessage)
             } else {
               this.$message({
-                message: '恭喜你，修改用户信息成功',
+                message: '恭喜你，修改站长信息成功',
                 type: 'success'
               })
             }
           }).catch(res => {
-            console.log('修改用户信息失败', res)
+            console.log('修改站长信息失败', res)
             this.$message.error('服务器繁忙，请重试！')
           })
         }).catch(() => {})
@@ -237,6 +300,8 @@
     created () {
       this.getStates()
       this.getCityList()
+      this.getBusiness()
+      this.getCustomerInfo()
     }
   }
 </script>

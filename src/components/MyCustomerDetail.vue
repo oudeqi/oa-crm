@@ -33,7 +33,7 @@
       </div>
       <div class="follow-info">
         <h3>跟进信息</h3>
-        <ul>
+        <ul v-if="customerInfo.logs && customerInfo.logs.length>0">
           <li v-for="(item, index) in customerInfo.logs" :key="index">
             <div class="item-head">
               <img :src="item.headIconUrl" alt="">
@@ -47,6 +47,7 @@
             </div>
           </li>
         </ul>
+        <p class="no-follow" v-else>暂无跟进信息</p>
         <div class="btn-warpper">
           <el-button type="info" icon="plus" @click="isModalOpen=true">添加跟进</el-button>
         </div>
@@ -231,9 +232,16 @@
      .follow-info{
        float: left;
        width: 55%;
+       .no-follow{
+         padding-left: 20px;
+         color: #aaa;
+       }
        ul{
          padding-left: 20px;
          margin-top: 30px;
+         max-height: 560px;
+         margin-right: 50px;
+         overflow: auto;
          li{
            margin-bottom: 20px;
            @include clearfix();
