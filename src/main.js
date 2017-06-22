@@ -8,7 +8,7 @@ import VueResource from 'vue-resource'
 import 'element-ui/lib/theme-default/index.css'
 import './filter'
 import ElementUi from 'element-ui'
-import {appHost, token} from './const'
+import {appHost, getToken} from './const'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
@@ -17,7 +17,7 @@ Vue.use(ElementUi)
 Vue.http.options.emulateHTTP = true
 Vue.http.options.timeout = 3000
 Vue.http.interceptors.push(function (request, next) {
-  request.headers.set('Authorization', token)
+  request.headers.set('Authorization', getToken())
   request.url = appHost() + request.url
   next(function (response) {
     return response

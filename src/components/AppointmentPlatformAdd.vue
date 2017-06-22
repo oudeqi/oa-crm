@@ -17,55 +17,41 @@
                 <el-option v-for="item in options4" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="选择线路">
+              <el-select v-model="appointmentInfo.lineId" placeholder="请选择路线" @change="">
+                <el-option v-for="item in role" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="行程时间">
+              <el-date-picker v-model="appointmentInfo.tripDate" align="left" type="date" placeholder="选择日期"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="预约人数">
+              <el-input v-model="appointmentInfo.number" placeholder="请输入预约人数"></el-input>
+            </el-form-item>
+            <el-form-item label="流程状态">
+              <el-select v-model="appointmentInfo.status" placeholder="请输选择状态" @change="">
+                <el-option v-for="item in role" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="票号区间">
+              <el-input class="range" v-model="appointmentInfo.ticketBegin" placeholder="票号开始"></el-input> -
+              <el-input class="range" v-model="appointmentInfo.ticketEnd" placeholder="票号结束"></el-input>
+            </el-form-item>
             <el-form-item label="联系人姓名">
-              <el-input v-model="appointmentInfo.touristName" placeholder="请输入电话号码"></el-input>
+              <el-input v-model="appointmentInfo.touristName" placeholder="请输入姓名"></el-input>
             </el-form-item>
             <el-form-item label="联系电话">
               <el-input v-model="appointmentInfo.touristPhone" placeholder="请输入电话号码"></el-input>
             </el-form-item>
             <el-form-item label="联系人微信">
-              <el-input v-model="appointmentInfo.wechat" placeholder="请输入电话号码"></el-input>
+              <el-input v-model="appointmentInfo.wechat" placeholder="请输入微信号"></el-input>
             </el-form-item>
             <el-form-item label="联系人身份证">
-              <el-input v-model="appointmentInfo.touristId" placeholder="请输入电话号码"></el-input>
-            </el-form-item>
-            <el-form-item label="预约人数">
-              <el-input v-model="appointmentInfo.number" placeholder="请输入电话号码"></el-input>
-            </el-form-item>
-            <el-form-item label="票号区间">
-              <el-input v-model="appointmentInfo.ticketBegin" placeholder="请输入电话号码"></el-input>
-              <el-input v-model="appointmentInfo.ticketBegin" placeholder="ticketEnd"></el-input>
-            </el-form-item>
-            <el-form-item label="选择线路">
-              <el-input v-model="appointmentInfo.ticketEnd" placeholder="请输入电话号码"></el-input>
-            </el-form-item>
-            <el-form-item label="选择时间">
-              <el-input v-model="appointmentInfo.tripDate" placeholder="请输入电话号码"></el-input>
-            </el-form-item>
-            <el-form-item label="流程状态">
-              <el-input v-model="appointmentInfo.status" placeholder="请输入电话号码"></el-input>
+              <el-input v-model="appointmentInfo.touristId" placeholder="请输入联系人身份证号码"></el-input>
             </el-form-item>
             <el-form-item label="备注信息">
-              <el-input v-model="appointmentInfo.remarks" placeholder="请输入电话号码"></el-input>
+              <el-input v-model="appointmentInfo.remarks" type="textarea" :rows="2" placeholder="请输入备注信息"></el-input>
             </el-form-item>
-
-            <!--<el-form-item label="员工角色">-->
-              <!--<el-select v-model="staffInfo.roleId" placeholder="请选择角色" @change="">-->
-                <!--<el-option v-for="item in role" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-              <!--</el-select>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="电话号码">-->
-              <!--<el-input v-model="staffInfo.phoneNumber" placeholder="请输入电话号码"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="初始密码">-->
-              <!--<el-input v-model="staffInfo.password" placeholder="请输入初始密码"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="基本薪资">-->
-              <!--<el-input v-model.number="staffInfo.baseSalary" placeholder="请输入整数"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="入职时间">-->
-              <!--<el-date-picker v-model="staffInfo.joinDate" align="right" type="date" placeholder="选择日期"></el-date-picker>-->
-            <!--</el-form-item>-->
             <el-form-item>
               <el-button type="info" @click="submitForm">添加</el-button>
               <el-button @click="back">取消</el-button>
@@ -87,23 +73,23 @@
         value9: null,
         options4: [],
         appointmentInfo: {
-          customerId: 8,
-          customerName: '昆山招聘',
+          customerId: null,
+          customerName: null,
           serviceUid: 1,
           serviceName: '尚丹丹',
-          touristId: 0,
+          touristId: null,
           touristName: null,
-          touristPhone: 0,
-          age: 0,
-          number: 0,
+          touristPhone: null,
+          age: null,
+          number: null,
           wechat: null,
-          ticketBegin: 0,
-          ticketEnd: 0,
-          lineId: 0,
+          ticketBegin: null,
+          ticketEnd: null,
+          lineId: null,
           tripDate: null,
           remarks: null,
-          type: 0,
-          status: 0
+          type: null,
+          status: null
         },
         states: ['Alabama', 'Alaska', 'Arizona',
           'Arkansas', 'California', 'Colorado',
@@ -182,6 +168,9 @@
 
   @import "../scss/_mixins.scss";
   .add{
+    .range{
+      max-width: 133px !important;
+    }
     .breadcrumb{
       padding: 20px;
       background: #fbfbfb;

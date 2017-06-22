@@ -56,7 +56,7 @@
   * */
   import Vue from 'vue'
   import router from '@/router'
-  import {token, removeToken} from '../const'
+  import {getToken, setToken, setUser} from '../const'
 
   export default {
     name: 'index',
@@ -99,7 +99,6 @@
         })
       },
       handleDropdownItemClick (command) {
-        console.log(command)
         if (command === 'logout') {
           this.logout()
         }
@@ -110,8 +109,9 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          removeToken()
-          Vue.http.headers.custom['Authorization'] = token
+          setToken(null)
+          setUser(null)
+          Vue.http.headers.custom['Authorization'] = getToken()
           router.push('/login')
         }).catch(() => {})
       }
@@ -126,6 +126,12 @@
           router.push('/login')
         } else {
           next(vm => {
+            setUser({
+              id: res.body.data.uid,
+              name: res.body.data.nickName,
+              headPic: res.body.data.headIconUrl,
+              phone: res.body.data.phoneNumber
+            })
             vm.headIconUrl = res.body.data.headIconUrl
             vm.nickName = res.body.data.nickName
             vm.phoneNumber = res.body.data.phoneNumber
