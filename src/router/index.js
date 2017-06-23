@@ -14,6 +14,7 @@ import MyCustomerDetailEdit from '@/components/MyCustomerDetailEdit'
 import MyCustomerSigned from '@/components/MyCustomerSigned'
 import MyCustomerSignedFor from '@/components/MyCustomerSignedFor'
 import MyCustomerSignedAdd from '@/components/MyCustomerSignedAdd'
+import MyCustomerSignedUpdate from '@/components/MyCustomerSignedUpdate'
 import TeamCustomerDetail from '@/components/TeamCustomerDetail'
 import StaffList from '@/components/StaffList'
 import StationList from '@/components/StationList'
@@ -100,6 +101,11 @@ export default new Router({
           path: '/customer/signed-for',
           name: 'myCustomerSignedFor',
           component: MyCustomerSignedFor
+        },
+        {
+        	path: '/customer/signed-update/:id',
+        	name: 'myCustomerSignedUpdate',
+        	component:MyCustomerSignedUpdate
         },
         {
           path: '/customer/signed-add',

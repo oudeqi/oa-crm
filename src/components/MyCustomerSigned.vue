@@ -22,20 +22,22 @@
     </div>
     <div class="main">
       <el-table :data="tableData" v-loading.body="loading">
-        <el-table-column prop="customerName" label="平台名称" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="cityCodeName" label="地区" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="mainPerson" label="平台负责人"></el-table-column>
-        <el-table-column prop="mainPhoneNumber" label="电话" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="mainWeChat" label="微信号" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="status" label="客户状态" :formatter="statusFormatter"></el-table-column>
-        <el-table-column prop="signType" label="客户类型" :formatter="customerTypeFormatter" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="customerName" label="客户" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="productName" label="类型" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="typeName" label="二级类型"></el-table-column>
+        <!--<el-table-column v-if="ertaiTypeName" prop="ertaiTypeName" label="二级类型"></el-table-column>
+        <el-table-column v-if="bookTypeName" prop="bookTypeName" label="二级类型"></el-table-column>-->
+        
+        <el-table-column prop="stock" label="股权" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="realMoney" label="实际收款" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="money" label="总金额" ></el-table-column>
         <el-table-column prop="remarks" label="备注" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="createDate" label="创建时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="lastOperTime" label="操作时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="flowStatus" label="签约状态" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="createDate" :formatter="dateFormat" label="申请时间" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
-            <el-button type="text" @click="detail(scope)">详情</el-button>
-            <el-button type="text" @click="openModal(scope)">添加跟进</el-button>
+            <el-button type="text" @click="lookInfo(scope)">详情</el-button>
+            <el-button type="text" @click="changeSigned(scope)">修改</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -45,7 +47,35 @@
         layout="total, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-    <el-dialog @close="reload" title="添加跟进" v-model="isModalOpen" :close-on-click-modal="closeOnClickModal">
+    
+    <el-dialog
+		  title="详情"
+		  :visible.sync="showInfo"
+		  size="tiny"
+			>
+		  <div>
+		  	<div class="infoDiv">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;客户:<span>{{signedThisInfo.customerName}}</span></div>
+		  	<div class="infoDiv">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类型:<span>{{signedThisInfo.productName}}</span></div>
+		  	<div class="infoDiv">二级类型:<span>{{signedThisInfo.typeName}}</span></div>
+		  	<div class="infoDiv">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;股权:<span>{{signedThisInfo.stock}}</span></div>
+		  	<div class="infoDiv">实际收款:<span>{{signedThisInfo.realMoney}}</span></div>
+		  	<div class="infoDiv">&nbsp;&nbsp;&nbsp;&nbsp;总金额:<span>{{signedThisInfo.money}}</span></div>
+		  	<div class="infoDiv">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注:<span>{{signedThisInfo.remarks}}</span></div>
+		  	<div class="infoDiv">签约状态:<span>{{signedThisInfo.flowStatus}}</span></div>
+		  	<div class="infoDiv">申请时间:<span>{{signedThisInfo.createDate}}</span></div>
+		  	
+		  	<div class="infoDiv">平台区域:<span>{{signedThisInfo.customerName}}</span></div>
+		  	<div class="infoDiv">是否拿票:<span>{{signedThisInfo.status==1?'是':'否'}}</span></div>
+		  	<div class="infoDiv">游票区间:<span>{{signedThisInfo.ticketBegin}}-{{signedThisInfo.ticketEnd}}</span></div>
+		  	<div class="infoDiv">小说账户:<span>{{signedThisInfo.bookAccount}}</span></div>
+		  </div>
+		  <span slot="footer" class="dialog-footer">
+		    <el-button type="primary" @click="showInfo = false">确 定</el-button>
+		  </span>
+		</el-dialog>
+    
+    
+    <!--<el-dialog @close="reload" title="添加跟进" v-model="isModalOpen" :close-on-click-modal="closeOnClickModal">
       <el-form :model="follow" label-width="100px">
         <el-form-item label="客户状态">
           <el-select v-model="follow.state" placeholder="请选择活动区域">
@@ -66,18 +96,24 @@
         <el-button @click="isModalOpen = false">取 消</el-button>
         <el-button type="primary" @click="addFollow">确 定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 
 <script>
   import router from '../router'
   import moment from 'moment'
-  import {appHost, token} from '../const'
+  import {appHost} from '../const'
   export default {
-    name: 'myCustomer',
+    name: 'myCustomerSigned',
     data () {
       return {
+      	showInfo:false,
+      	signedThisInfo:{
+      		customerName:'',
+      		productName:'',
+      		
+      	},
         sortArr: null,
         sortType: null,
         states: null,
@@ -97,14 +133,32 @@
           id: null
         },
         importAction: appHost() + '/v1/aut/crm/import/customer',
-        importHeaders: {
-          Authorization: token
-        },
         importLoading: false
       }
     },
     computed: {},
     methods: {
+    	changeSigned(sco){
+//  		params: {id: scope.row.id}
+    		 router.push({name: 'myCustomerSignedUpdate',params:{id:sco.row.id}})
+    	},
+    	lookInfo(sco){
+    		console.log(sco.row.customerName)
+    		this.showInfo=true;
+    		this.signedThisInfo=sco.row;
+    		
+    		if (sco.row.createDate) {
+          this.signedThisInfo.createDate=moment(sco.row.createDate).format('YYYY-MM-DD HH:mm:ss')
+        }
+    		
+    	},
+    	dateFormat (row) {
+        if (row.createDate) {
+          return moment(row.createDate).format('YYYY-MM-DD HH:mm:ss')
+        } else {
+          return ''
+        }
+      },
       handleImportProgress () {
         this.importLoading = true
       },
@@ -177,23 +231,38 @@
 //        this.tableData = xx.data.data
 //        this.total = xx.data.rowCount
 //        this.pageCount = xx.data.pageCount
-        this.$http.get('/v1/aut/crm/my/customer', {
+        this.$http.get('/v2/aut/crm/sign/list', {
           params: {
             pageSize: this.pageSize,
-            order: this.sortType,
             pageIndex: this.currentPage,
             search: this.keywords,
-            status: this.state
+            type:0,
           }
         }).then(res => {
-          console.log('获取我的客户列表', res)
+          console.log('获取我的签约列表', res)
           this.loading = false
           if (res.body.errMessage) {
             this.$message.error(res.body.errMessage)
           } else {
+          	
             this.tableData = res.body.data.data
             this.total = res.body.data.rowCount
             this.pageCount = res.body.data.pageCount
+            this.tableData.forEach(function(item,index){
+          		 if(item.flowStatus==-1){
+          		 	item.flowStatus='总裁拒绝';
+          		 }else if(item.flowStatus==-1){
+          		 	item.flowStatus="财务拒绝"
+          		 }else if(item.flowStatus==0){
+          		 	item.flowStatus='审核中'
+          		 }else if(item.flowStatus==1){
+          		 	item.flowStatus='财务已审核'
+          		 }else if(item.flowStatus==2){
+          		 	item.flowStatus='总裁已审核'
+          		 }else{
+          		 	item.flowStatus='未知'
+          		 }
+          	})
           }
         }).catch(res => {
           console.log('获取我的客户列表异常', res)
@@ -305,6 +374,17 @@
     .breadcrumb{
       padding: 20px;
       background: #fbfbfb;
+    }
+    .infoDiv {
+    	font-size: 1.3rem;
+    	line-height: 2rem;
+    	color: #222;
+    	font-weight: bold;
+   	 	span {
+   	 		margin: 0 0 0 1rem;
+   	 		font-size: 1rem;
+   	 		color: #444;
+   	 	}
     }
     .filter{
       margin-top: 15px;

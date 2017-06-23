@@ -4,7 +4,7 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>客户</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/customer/signed' }">我的签约</el-breadcrumb-item>
-        <el-breadcrumb-item>新建签约</el-breadcrumb-item>
+        <el-breadcrumb-item>签约修改</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
@@ -89,26 +89,14 @@
             <!--备注-->
             
             <el-form-item>
-              <el-button type="info" @click="signedGo">提交</el-button>
+              <el-button type="info" @click="signedGo">保存</el-button>
  
             </el-form-item>
           </el-form>
             
           </el-form>
         </div>
-      </div>
-     <!-- <div class="follow-info">
-        <h3>客户搜索</h3>
-        <div class="form-warpper">
-        	//:model="" ref="other"
-          <el-form  label-width="100px" class="demo-ruleForm">
-          <el-form-item>
-              <el-button type="info" @click="submitForm">搜索</el-button>
-              //<el-button @click="back">取消</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </div>-->
+     </div>
     </div>
   </div>
 </template>
@@ -121,6 +109,7 @@
     name: 'myCustomerAdd',
     data () {
       return {
+      	goid:null,
       	maxLen:8,
       	customerS:null,
       	customerSAll:null,
@@ -210,7 +199,8 @@
           	isGetTicket=0;
           }
     		
-    		this.$http.post('/v2/aut/crm/sign/add',{
+    		this.$http.post('/v2/aut/crm/sign/update',{
+    			id:this.goid,
     			status:isGetTicket,
     			cityCode:code,
     			tripType: tripType,
@@ -230,7 +220,7 @@
     			if(res.body.errMessage){
     				this.$message.error(res.body.errMessage)
     			}else{
-    				this.$message.success("新增成功");
+    				this.$message.success("修改成功");
 //  				this.resetForm();
     				this.customerS=null;
     				this.signed={
@@ -248,27 +238,32 @@
 		        }
     			}
     		}).catch(res=>{
-    			this.$message.error('服务器繁忙！')
+    			this.$message.error('服务器繁忙！1')
     		})
     	},
     	customerSearch(e){
     		console.log("搜索客户",e);
-    		this.$http.get('/v1/aut/crm/my/customer', {
-          params: {
-            search: e,
-            pageIndex:1,
-          }
-       }).then(res => {
-          if (res.body.errMessage) {
-            this.$message.error(res.body.errMessage)
-          } else {
-            this.customerSAll = res.body.data.data;
-            this.customerS=res.body.data.data[0].id;
-            console.log(this.customerSAll)
-          }
-        }).catch(res => {
-          this.$message.error('服务器繁忙！')
-        })
+    		if(e!==''){
+    			setTimeout(()=>{
+    				this.$http.get('/v1/aut/crm/my/customer', {
+			          params: {
+			            search: e,
+			            pageIndex:1,
+			          }
+			       }).then(res => {
+			          if (res.body.errMessage) {
+			            this.$message.error(res.body.errMessage)
+			          } else {
+			            this.customerSAll = res.body.data.data;
+			            this.customerS=res.body.data.data[0].id;
+			            console.log(this.customerSAll)
+			          }
+			        }).catch(res => {
+//			          this.$message.error('服务器繁忙！2')
+			        })
+    			},200)
+			    		
+        }
     	},
     	product2Change(){
     		this.product2=this.product[this.signed.productnum-1].data;
@@ -404,9 +399,66 @@
             console.log('检查客户名称失败', res)
           })
         }
-      }
+      },
+      getUpdateInfo(){
+      	this.$http.get('/v2/aut/crm/sign/details', {
+            params:{
+            	id: this.goid,
+            }
+          }).then(res => {
+     					console.log('获取签约详情',res.body.data);
+     					var k=res.body.data;
+     					console.log(k.customerId)
+     					this.customerS=k.customerId;
+     					this.customerSAll=[{
+     						customerName:k.customerName,
+     						id:k.customerId,
+     					}];
+//   					this.customerSearch(k.customerName)
+     					this.signed.productnum=k.productId;
+     					if(this.signed.productnum==1){
+     						
+     						this.signed.productnum2=k.tripType;
+     					}else if(this.signed.productnum==2){
+     						this.signed.productnum2=k.ertaiType;
+     					}else if(this.signed.productnum==3){
+     						this.signed.productnum2=k.bookType;
+     					}
+     					
+     					let [code, cityCode] = [k.cityCode, []]
+	          cityCode[0] = code.substring(0, 2) + '0000'
+	          cityCode[1] = code.substring(0, 2) + code.substring(2, 4) + '00'
+	          cityCode[2] = code
+	          this.signed.cityCode=cityCode;
+	          
+	          this.signed.stock=k.stock;
+     				this.signed.gathering=k.realMoney;
+     				this.signed.allmoney=k.money;
+     				this.signed.remark=k.remarks;
+     				this.signed.priceBegin=k.ticketBegin;
+     				this.signed.priceAfter=k.ticketEnd;
+     				if(k.status==1 || k.status=='1'){
+     					this.signed.getTicket='true';
+     				}else{
+     					this.signed.getTicket='false';
+     				}
+     				
+     				this.signed.storyAccount=k.bookAccount;
+     					
+     					
+          }).catch(res => {
+          
+          })
+//    	/v2/aut/crm/sign/details?id=1
+      },
     },
     created () {
+    	this.goid=this.$route.params.id;
+    	this.getUpdateInfo();
+    	
+    	
+    	
+//  	this.$router.get
       this.getStates()
       this.getAddressList()
       this.getProduct()
