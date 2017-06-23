@@ -29,6 +29,7 @@ import PhoneAppointmentAdd from '@/components/PhoneAppointmentAdd'
 import PhoneAppointmentDetail from '@/components/PhoneAppointmentDetail'
 import PhoneAppointmentEdit from '@/components/PhoneAppointmentEdit'
 import PlatformAppointmentRecord from '@/components/PlatformAppointmentRecord'
+import PhoneAppointmentRecord from '@/components/PhoneAppointmentRecord'
 
 Vue.use(Router)
 
@@ -155,6 +156,11 @@ export default new Router({
           component: PhoneAppointmentEdit
         },
         {
+          path: '/application/phone/record/:id',
+          name: 'phoneAppointmentRecord',
+          component: PhoneAppointmentRecord
+        },
+        {
           path: '/appointment/platform',
           name: 'platformAppointment',
           component: PlatformAppointment
@@ -184,163 +190,8 @@ export default new Router({
           name: 'visitAppointment',
           component: VisitAppointment
         }
-
       ]
     },
     { path: '*', redirect: '/' }
   ]
 })
-
-// const expect = [
-//   {
-//     task: '新增、修改员工资料',
-//     time: '4',
-//     subTask: [
-//       {
-//         task: '员工列表',
-//         time: '1'
-//       },
-//       {
-//         task: '员工详情',
-//         time: '1'
-//       },
-//       {
-//         task: '新增员工',
-//         time: '1'
-//       },
-//       {
-//         task: '修改员工资料',
-//         time: '1'
-//       }
-//     ]
-//   },
-//   {
-//     task: '修改站长资料',
-//     time: '3',
-//     subTask: [
-//       {
-//         task: '站长列表',
-//         time: '1'
-//       },
-//       {
-//         task: '站长详情',
-//         time: '1'
-//       },
-//       {
-//         task: '修改站长',
-//         time: '1'
-//       }
-//     ]
-//   },
-//   {
-//     task: '签约',
-//     time: '6',
-//     subTask: [
-//       {
-//         task: '签约列表',
-//         time: '1'
-//       },
-//       {
-//         task: '签约详情',
-//         time: '1'
-//       },
-//       {
-//         task: '新增签约',
-//         time: '2',
-//         desc: '旅游、2台、小说、签约内容不一样'
-//       },
-//       {
-//         task: '签约修改',
-//         time: '2',
-//         desc: '旅游、2台、小说、签约修改内容不一样'
-//       }
-//     ]
-//   },
-//   {
-//     task: '预约',
-//     time: '6',
-//     subTask: [
-//       {
-//         task: '预约列表',
-//         time: '1'
-//       }, {
-//         task: '预约详情',
-//         time: '1'
-//       },
-//       {
-//         task: '新增预约',
-//         time: '2',
-//         desc: '电话预约、平台预约、回访记录内容不一样'
-//       },
-//       {
-//         task: '预约修改',
-//         time: '2',
-//         desc: '电话预约、平台预约、回访记录修改内容不一样'
-//       }
-//     ]
-//   },
-//   {
-//     task: '考勤',
-//     time: '4',
-//     subTask: [
-//       {
-//         task: '考勤列表',
-//         time: '1'
-//       }, {
-//         task: '个人考勤详情',
-//         time: '1'
-//       },
-//       {
-//         task: '新增考勤',
-//         time: '1'
-//       },
-//       {
-//         task: '个人考勤修改',
-//         time: '1'
-//       }
-//     ]
-//   },
-//   {
-//     task: '工资',
-//     time: '4',
-//     subTask: [
-//       {
-//         task: '工资列表',
-//         time: '1'
-//       }, {
-//         task: '工资详情',
-//         time: '1'
-//       },
-//       {
-//         task: '新增工资',
-//         time: '1'
-//       },
-//       {
-//         task: '工资修改',
-//         time: '1'
-//       }
-//     ]
-//   },
-//   {
-//     task: '资金流水',
-//     time: '4',
-//     subTask: [
-//       {
-//         task: '资金流水列表',
-//         time: '1'
-//       }, {
-//         task: '资金流水详情',
-//         time: '1'
-//       },
-//       {
-//         task: '新增资金流水',
-//         time: '1'
-//       },
-//       {
-//         task: '工资资金流水',
-//         time: '1'
-//       }
-//     ]
-//   }
-// ]
-

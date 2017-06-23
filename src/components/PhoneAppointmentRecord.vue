@@ -3,7 +3,7 @@
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>设置</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/appointment/platform' }">平台预约</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/appointment/phone' }">电话预约</el-breadcrumb-item>
         <el-breadcrumb-item>回访记录</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -75,7 +75,7 @@
 <script>
   import moment from 'moment'
   export default {
-    name: 'platformAppointmentRecord',
+    name: 'phoneAppointmentRecord',
     data () {
       return {
         recordAddObj: {

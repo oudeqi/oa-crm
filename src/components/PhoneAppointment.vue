@@ -23,6 +23,7 @@
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
+            <el-button type="text" @click="visitRecord(scope)">回访记录</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,6 +93,10 @@
       detail (scope) {
         console.log(scope)
         router.push({name: 'phoneAppointmentDetail', params: {id: scope.row.id}})
+      },
+      visitRecord (scope) {
+        console.log(scope)
+        router.push({name: 'phoneAppointmentRecord', params: {id: scope.row.id}})
       },
       appointmentAdd () {
         router.push({name: 'phoneAppointmentAdd'})

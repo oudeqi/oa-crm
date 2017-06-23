@@ -25,6 +25,9 @@
             <el-form-item label="电话号码">
               <el-input v-model="staffInfo.phoneNumber"></el-input>
             </el-form-item>
+            <el-form-item label="基本工资">
+              <el-input v-model.number="showSalary"placeholder="单位：元"></el-input>
+            </el-form-item>
             <el-form-item label="入职时间">
               <el-date-picker v-model="staffInfo.joinDate" align="right" type="date" placeholder="选择日期"></el-date-picker>
             </el-form-item>
@@ -48,7 +51,13 @@
     name: 'staffEdit',
     data () {
       return {
+        showSalary: null,
         staffInfo: {}
+      }
+    },
+    watch: {
+      staffInfo () {
+        this.showSalary = this.staffInfo.baseSalary / 100
       }
     },
     methods: {
@@ -85,7 +94,7 @@
           if (this.staffInfo.leaveDate) {
             this.staffInfo.leaveDate = new Date(leaveDate).getTime()
           }
-          console.log(this.staffInfo)
+          this.staffInfo.baseSalary = this.showSalary * 100
           this.$http.post('/v2/aut/crm/user/update', this.staffInfo).then(res => {
             console.log('修改用户信息', res)
             if (res.body.errMessage) {
@@ -95,7 +104,6 @@
                 message: '恭喜你，修改员工信息成功',
                 type: 'success'
               })
-              this.getStaffInfo()
             }
           }).catch(res => {
             console.log('修改员工信息失败', res)

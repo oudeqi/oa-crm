@@ -116,36 +116,6 @@
           bookType: null,
           recommendName: null
         },
-        rules: {
-          customerName: [
-            { required: true, message: '请输入平台名称', trigger: 'blur' }
-          ],
-          cityCode: [
-            { required: true, message: '请选择平台区域', trigger: 'change' }
-          ],
-          mainPerson: [
-            { required: true, message: '请输入平台负责人', trigger: 'blur' }
-          ],
-          mainWeChat: [
-            { required: true, message: '请输入平台负责人微信号', trigger: 'blur' }
-          ],
-          mainPhoneNumber: [
-            { required: true, message: '请输入平台负责人手机号码', trigger: 'blur' },
-            { type: 'number', message: '请输入正确的手机号码', trigger: 'blur' }
-          ],
-          job: [
-            { required: true, message: '请输入负责人职位', trigger: 'blur' }
-          ],
-          status: [
-            { required: true, message: '请选择客户状态', trigger: 'change' }
-          ],
-          remarks: [
-            { required: true, message: '请输入备注信息', trigger: 'blur' }
-          ],
-          subPhoneNumber: [
-            { type: 'number', message: '请输入正确的手机号码', trigger: 'blur' }
-          ]
-        },
         cityOptions: []
       }
     },
@@ -243,6 +213,7 @@
           this.customerInfo.tripType = res.body.data.tripType
           this.customerInfo.ertaiType = res.body.data.ertaiType
           this.customerInfo.bookType = res.body.data.bookType
+          this.customerInfo.recommendName = res.body.data.recommendName
         }).catch(res => {
           console.log('获取客户信息异常', res)
         })

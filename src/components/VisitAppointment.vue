@@ -13,14 +13,12 @@
     </div>
     <div class="main">
       <el-table :data="tableData">
-        <el-table-column prop="customerName" label="平台名称"></el-table-column>
-        <el-table-column prop="serviceName" label="预约人"></el-table-column>
-        <el-table-column prop="createDate" label="预约时间" :formatter="dateFormat"></el-table-column>
-        <el-table-column prop="remarks" label="备注"></el-table-column>
-        <el-table-column prop="wechat" label="微信号"></el-table-column>
+        <el-table-column prop="id" label="#"></el-table-column>
+        <el-table-column prop="info" label="描述" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="createDate" label="创建时间" :formatter="dateFormat"></el-table-column>
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
-            <el-button type="text" @click="detail(scope)">详情</el-button>
+            <el-button type="text" @click="openDetailDialog(scope)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -30,6 +28,17 @@
                      layout="total, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    <el-dialog title="查看回访记录详情" v-model="isDetailModalOpen" :close-on-click-modal="false">
+      <el-form :model="recordDetailObj">
+        <el-form-item class="marb0">
+          <el-input type="textarea" class="textarea-disabled" :disabled="true"
+                    :rows="8" placeholder="请输入内容" v-model="recordDetailObj.info"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="isDetailModalOpen = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -39,6 +48,8 @@
     name: 'visitAppointment',
     data () {
       return {
+        isDetailModalOpen: false,
+        recordDetailObj: {},
         tableData: null,
         keywords: '',
         currentPage: 1,
@@ -85,8 +96,10 @@
           return '无'
         }
       },
-      detail (scope) {
+      openDetailDialog (scope) {
         console.log(scope)
+        this.isDetailModalOpen = true
+        this.recordDetailObj = scope.row
       }
     },
     created () {
@@ -98,7 +111,9 @@
 <style lang="scss" scoped>
 
   .visit-appointment{}
-
+  .marb0{
+    margin: 0;
+  }
   .breadcrumb{
     padding: 20px;
     background: #fbfbfb;

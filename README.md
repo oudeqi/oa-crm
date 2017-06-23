@@ -230,17 +230,17 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 
 
-/v2/aut/crm/reservation/visit/add reservationId post 添加回访记录
+// TODO /v2/aut/crm/reservation/visit/add reservationId post 添加回访记录
 {
   "info": 1,
-  "resrvationId": 1
+  "reservationId": 1
 }
 
-/v2/aut/crm/reservation/visit/update id post 更新回访记录
+// TODO /v2/aut/crm/reservation/visit/update id post 更新回访记录
 {
   "id": 1,
   "info": 1,
-  "resrvationId": 1
+  "reservationId": 1
 }
 
 // TODO /v2/aut/crm/reservation/visit/list?reservationId=1 get 获取回访列表
@@ -259,5 +259,85 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 // TODO /v2/aut/crm/customer/list/master/all?search="" 获取所有旅游站长列表
 
+
+
+
+
+
+/v2/aut/crm/attendance/import MultipartFile file post 导入考勤
+
+/v2/aut/crm/attendance/update post 更新考勤信息
+{
+  "id": 1,
+  "uid": 1,
+  "nickName": null,
+  "goToWorkDate": null,
+  "goOffWorkDate": null,
+  "isForgotClock": 0,
+  "date": null,
+  "isLeave": 0,
+  "leaveInfo": null,
+  "remarks": null
+}
+
+/v2/aut/crm/attendance/list?date=2017-06 get 获取考勤列表
+
+/v2/aut/crm/attendance/leave/list?uid=1&date=2017-06 get 获取指定用户的请假列表
+
+/v2/aut/crm/attendance/details?id=1 get 获取指定ID的考勤详细信息
+
+/v2/aut/crm/salary/update post 更新工资信息
+{
+  "id": 1,
+  "uid": 1,
+  "nickName": "尚丹丹",
+  "baseMoney": 5000,
+  "saleMoney": 0,
+  "serviceMoney": 0,
+  "leaveDeductMoney": 0,
+  "otherDeductMoney": 0,
+  "otherIncomeMoney": 0,
+  "paidMoney": 0,
+  "date": 1498205491000,
+  "remarks": null,
+  "createDate": 1498201170000
+}
+
+/v2/aut/crm/salary/list?date=2017-06 get 获取工资列表信息
+
+/v2/aut/crm/salary/details?id=1 get 获取指定ID的工资详情
+
+/v2/aut/crm/capital/add post 添加资金流水信息
+{
+  "typeId": 0,
+  "money": 0,
+  "date": null,
+  "uid": 0,
+  "nickName": null,
+  "customerId": 0,
+  "customerName": null,
+  "remarks": null,
+  "typeName": null,
+  "createDate": null
+}
+
+/v2/aut/crm/capital/update post 更新资金流水信息
+{
+  "id": 1,
+  "typeId": 0,
+  "money": 0,
+  "date": null,
+  "uid": 0,
+  "nickName": null,
+  "customerId": 0,
+  "customerName": null,
+  "remarks": null,
+  "typeName": null,
+  "createDate": null
+}
+
+/v2/aut/crm/capital/list get 获取资金流水列表
+
+/v2/aut/crm/capital/details?id=1 get 获取指定ID的资金流水详情
 
 */
