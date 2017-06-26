@@ -126,7 +126,6 @@
       	customerSAll:null,
       	product:null,
       	product2:null,
-        states: null,
         addressList:null,
         signed: {
         	cityCode: [],
@@ -307,31 +306,6 @@
       back () {
         router.go(-1)
       },
-      getStates () {
-        this.states = [{
-          label: '新建',
-          value: '1'
-        }, {
-          label: '拒绝',
-          value: '2'
-        }, {
-          label: '未回应',
-          value: '3'
-        }, {
-          label: '初步了解',
-          value: '4'
-        }, {
-          label: '意向',
-          value: '5'
-        }, {
-          label: '重点维护',
-          value: '6'
-        }, {
-          label: '签约',
-          value: '7'
-        }]
-//      this.customerInfo.status = this.states[0].value
-      },
       handleCityCodeChange (value) {
         console.log(value)
       },
@@ -340,74 +314,8 @@
         this.$refs['base'].resetFields()
 //      this.$refs['other'].resetFields()
       },
-      submitForm () {
-        this.$confirm('确定信息已经完整？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'info'
-        }).then(() => {
-          console.log(this.customerInfo)
-          let code = ''
-          if (this.customerInfo.cityCode[2]) {
-            code = this.customerInfo.cityCode[2]
-          } else if (this.customerInfo.cityCode[1]) {
-            code = this.customerInfo.cityCode[1]
-          } else {
-            code = this.customerInfo.cityCode[0]
-          }
-          this.$http.post('/v1/aut/crm/customer', {
-            customerName: this.customerInfo.customerName,
-            cityCode: code,
-            mainPerson: this.customerInfo.mainPerson,
-            mainPhoneNumber: this.customerInfo.mainPhoneNumber,
-            mainWeChat: this.customerInfo.mainWeChat,
-            job: this.customerInfo.job,
-            remarks: this.customerInfo.remarks,
-            subPerson: this.customerInfo.subPerson,
-            subPhoneNumber: this.customerInfo.subPhoneNumber,
-            subWeChat: this.customerInfo.subWeChat,
-            status: this.customerInfo.status,
-            signType: this.customerInfo.signType
-          }).then(res => {
-            console.log('添加客户信息', res)
-            if (res.body.errMessage) {
-              this.$message.error(res.body.errMessage)
-            } else {
-              this.resetForm()
-              this.$message({
-                message: '恭喜你，添加客户信息成功',
-                type: 'success'
-              })
-            }
-          }).catch(res => {
-            console.log('添加客户信息失败', res)
-            this.$message.error('服务器繁忙，请重试！')
-          })
-        }).catch(() => {})
-      },
-      checkCustomerName () {
-        if (this.customerInfo.customerName) {
-          this.$http.post('/v1/aut/crm/customer/check', {
-            customerName: this.customerInfo.customerName
-          }).then(res => {
-            console.log('检查客户名称', res)
-            if (res.body.errMessage) {
-              const h = this.$createElement
-              this.$notify.error({
-                title: '提示',
-                message: h('p', {style: 'color: #666'}, res.body.errMessage),
-                offset: 80,
-                duration: 5000
-              })
-            }
-          }).catch(res => {
-            console.log('检查客户名称失败', res)
-          })
-        }
-      }
     },
     created () {
-      this.getStates()
       this.getAddressList()
       this.getProduct()
       this.getCityList()
