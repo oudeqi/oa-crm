@@ -59,9 +59,9 @@
 				<div class="infoDiv">签约状态:<span>{{signedThisInfo.flowStatus}}</span></div>
 				<div class="infoDiv">申请时间:<span>{{signedThisInfo.createDate}}</span></div>
 
-				<div class="infoDiv">平台区域:<span>{{signedThisInfo.customerName}}</span></div>
+				<div class="infoDiv">平台区域:<span>{{signedThisInfo.cityCodeName}}</span></div>
 				<div class="infoDiv">是否拿票:<span>{{signedThisInfo.status==1?'是':'否'}}</span></div>
-				<div class="infoDiv">游票区间:<span>{{signedThisInfo.ticketBegin}}-{{signedThisInfo.ticketEnd}}</span></div>
+				<div class="infoDiv">游票区间:<span>{{signedThisInfo.ticketBegin}} - {{signedThisInfo.ticketEnd}}</span></div>
 				<div class="infoDiv">小说账户:<span>{{signedThisInfo.bookAccount}}</span></div>
 			</div>
 			<span slot="footer" class="dialog-footer">
