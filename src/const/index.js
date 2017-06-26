@@ -8,6 +8,7 @@ const appHost = function () {
     return 'http://192.168.10.43:8080'
   } else {
     return 'http://crm.2tai.net'
+//	return 'http://192.168.10.43:8080'
   }
 }
 
