@@ -11,3 +11,7 @@ Vue.filter('date', function (value, format) {
     return '无'
   }
 })
+
+Vue.filter('currency', function (value) {
+  return '￥' + (value).toFixed(2)
+})

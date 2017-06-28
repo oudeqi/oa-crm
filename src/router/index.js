@@ -30,6 +30,11 @@ import PhoneAppointmentDetail from '@/components/PhoneAppointmentDetail'
 import PhoneAppointmentEdit from '@/components/PhoneAppointmentEdit'
 import PlatformAppointmentRecord from '@/components/PlatformAppointmentRecord'
 import PhoneAppointmentRecord from '@/components/PhoneAppointmentRecord'
+import CheckWorkAttendance from '@/components/CheckWorkAttendance'
+import Salary from '@/components/Salary'
+import CheckWorkAttendanceDetail from '@/components/CheckWorkAttendanceDetail'
+import Leave from '@/components/Leave'
+import CapitalFlow from '@/components/CapitalFlow'
 
 Vue.use(Router)
 
@@ -189,6 +194,31 @@ export default new Router({
           path: '/appointment/visit',
           name: 'visitAppointment',
           component: VisitAppointment
+        },
+        {
+          path: '/work-attendance/list',
+          name: 'checkWorkAttendance',
+          component: CheckWorkAttendance
+        },
+        {
+          path: '/work-attendance/detail/:id',
+          name: 'checkWorkAttendanceDetail',
+          component: CheckWorkAttendanceDetail
+        },
+        {
+          path: '/work-attendance/leave',
+          name: 'leave',
+          component: Leave
+        },
+        {
+          path: '/salary',
+          name: 'salary',
+          component: Salary
+        },
+        {
+          path: '/capital-flow',
+          name: 'capitalFlow',
+          component: CapitalFlow
         }
       ]
     },

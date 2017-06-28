@@ -264,7 +264,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 
 
-/v2/aut/crm/attendance/import MultipartFile file post 导入考勤
+// TODO /v2/aut/crm/attendance/import MultipartFile file post 导入考勤
 
 /v2/aut/crm/attendance/update post 更新考勤信息
 {
@@ -280,11 +280,13 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "remarks": null
 }
 
-/v2/aut/crm/attendance/list?date=2017-06 get 获取考勤列表
 
-/v2/aut/crm/attendance/leave/list?uid=1&date=2017-06 get 获取指定用户的请假列表
+// TODO /v2/aut/crm/attendance/list?date=2017-05-01 00:00:00&uid=2
+// TODO 不传uid 请求date考勤预览列表 传uid 请求指定用户date的考勤列表
 
-/v2/aut/crm/attendance/details?id=1 get 获取指定ID的考勤详细信息
+// TODO /v2/aut/crm/attendance/leave/list?date=2017-06 get 获取上个月所有员工的请假列表
+
+// TODO 废弃 /v2/aut/crm/attendance/details?id=1 get 获取指定ID的考勤详细信息
 
 /v2/aut/crm/salary/update post 更新工资信息
 {
@@ -303,7 +305,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "createDate": 1498201170000
 }
 
-/v2/aut/crm/salary/list?date=2017-06 get 获取工资列表信息
+// TODO /v2/aut/crm/salary/list?date=2017-06 get 获取工资列表信息
 
 /v2/aut/crm/salary/details?id=1 get 获取指定ID的工资详情
 
@@ -336,7 +338,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "createDate": null
 }
 
-/v2/aut/crm/capital/list get 获取资金流水列表
+// TODO /v2/aut/crm/capital/list get 获取资金流水列表
 
 /v2/aut/crm/capital/details?id=1 get 获取指定ID的资金流水详情
 

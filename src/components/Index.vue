@@ -87,7 +87,7 @@
 //        console.log(this.userMenus)
         this.userMenus.forEach(value => {
           if (!!value.path && value.path.split('/')[1] === path[1]) {
-            if (value.menus.length > 0) {
+            if (!!value.menus && value.menus.length > 0) {
               value.menus.forEach(val => {
                 if (!!val.path && val.path.split('/')[2] === path[2]) {
                   this.defaultActive = val.id
