@@ -41,6 +41,7 @@
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
             <el-button type="text" @click="openModal(scope)">添加跟进</el-button>
+            <el-button type="text" @click="changeSigned(scope)">签约</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -110,6 +111,14 @@
     },
     computed: {},
     methods: {
+    	changeSigned(sco) {
+				router.push({
+					name: 'myCustomerSignedFromCustomer',
+					params: {
+						customerid: sco.row.id
+					}
+				})
+			},
       handleImportProgress () {
         this.importLoading = true
       },

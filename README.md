@@ -132,10 +132,10 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "realMoney": 4800000,
   "productId": 1,
   "cityCode": null,
-  "bookAccount": null,
+  "bookAccount": null, 小说账户
   "ticketBegin": "",
   "ticketEnd": "",
-  "status": 0,
+  "status": 0, 是否拿票0 拿， 1不拿
   "tripType": 0,
   "ertaiType": 0,
   "bookType": 0
