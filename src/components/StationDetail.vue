@@ -3,7 +3,9 @@
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>设置</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/setup/station' }">站长列表</el-breadcrumb-item>
+        <el-breadcrumb-item>
+          <span @click="goList">站长列表</span>
+        </el-breadcrumb-item>
         <el-breadcrumb-item>站长详情</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -59,10 +61,12 @@
 
 <script>
   import router from '../router'
+  import {getPageIndex} from '../const'
   export default {
     name: 'stationDetail',
-    data () {
+    data: function () {
       return {
+        listPageIndex: getPageIndex('stationPageIndex'),
         customerInfo: {},
         isModalOpen: false,
         closeOnClickModal: false,
@@ -108,10 +112,13 @@
       }
     },
     methods: {
-      customerEdit () {
-        router.push({name: 'stationEdit'})
+      goList: function () {
+        router.push({name: 'stationList', params: {index: this.listPageIndex}})
       },
-      getCustomerInfo () {
+      customerEdit: function () {
+        router.push({name: 'stationEdit', params: {index: this.listPageIndex}})
+      },
+      getCustomerInfo: function () {
         this.$http.get('/v1/aut/crm/customer/id', {
           params: {
             id: this.$route.params.id
@@ -145,7 +152,7 @@
         })
       }
     },
-    created () {
+    created: function () {
       this.$http.get('/v2/crm/config/list/type')
         .then((res) => {
           console.log('获取业务列表', res)

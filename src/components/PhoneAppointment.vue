@@ -16,10 +16,12 @@
     </div>
     <div class="main">
       <el-table :data="tableData">
-        <el-table-column prop="serviceName" label="预约人" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="createDate" label="预约时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="touristName" label="预约人" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="serviceName" label="客服" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="lineName" label="预约路线" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="tripDate" label="出行时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="touristPhone" label="联系电话" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="remarks" label="备注" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="wechat" label="微信号" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>

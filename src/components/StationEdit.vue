@@ -3,7 +3,9 @@
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>设置</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/setup/station' }">站长列表</el-breadcrumb-item>
+        <el-breadcrumb-item>
+          <span @click="goList">站长列表</span>
+        </el-breadcrumb-item>
         <el-breadcrumb-item>
           <span @click="back">站长详情</span>
         </el-breadcrumb-item>
@@ -91,10 +93,12 @@
 
 <script>
   import router from '../router'
+  import {getPageIndex} from '../const'
   export default {
     name: 'stationEdit',
     data () {
       return {
+        stationPageIndex: getPageIndex('stationPageIndex'),
         states: null,
         tripType: [],
         ertaiType: [],
@@ -122,6 +126,9 @@
     methods: {
       back () {
         router.go(-1)
+      },
+      goList: function () {
+        router.push({name: 'stationList', params: {index: this.stationPageIndex}})
       },
       getStates () {
         this.states = [{

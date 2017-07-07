@@ -21,10 +21,10 @@
             <img class="head-pic" :src="scope.row.headIconUrl" alt="">
           </template>
         </el-table-column>
+        <el-table-column prop="serialNumber" label="工号"></el-table-column>
         <el-table-column prop="nickName" label="姓名"></el-table-column>
         <el-table-column prop="phoneNumber" label="电话号码"></el-table-column>
-        <el-table-column prop="mainWeChat" label="入职时间" :formatter="dateFormat"></el-table-column>
-        <el-table-column prop="status" label="离职时间" :formatter="dateFormat"></el-table-column>
+        <el-table-column prop="joinDate" label="入职时间" :formatter="dateFormat"></el-table-column>
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
@@ -43,9 +43,10 @@
 <script>
   import moment from 'moment'
   import router from '../router'
+  import {setPageIndex} from '../const'
   export default {
     name: 'staffList',
-    data () {
+    data: function () {
       return {
         tableData: null,
         keywords: '',
@@ -56,8 +57,16 @@
       }
     },
     computed: {},
+    watch: {
+      '$route': 'routeChange'
+    },
     methods: {
-      getTableData () {
+      routeChange: function () {
+        console.log('routeChange', this.$route.params.index)
+        this.currentPage = parseInt(this.$route.params.index)
+        this.getTableData()
+      },
+      getTableData: function () {
         this.$http.get('/v2/aut/crm/user/list', {
           params: {
             pageSize: this.pageSize,
@@ -78,30 +87,35 @@
           this.$message.error('服务器繁忙！')
         })
       },
-      search () {
+      search: function () {
         this.currentPage = 1
         this.getTableData()
       },
-      pageIndexChange (val) {
+      pageIndexChange: function (val) {
         this.currentPage = val
-        this.getTableData()
+        router.push({name: 'staffList', params: {index: val}})
       },
-      dateFormat (row) {
-        if (row.createDate) {
-          return moment(row.createDate).format('YYYY-MM-DD HH:mm:ss')
+      dateFormat: function (row, col) {
+        if (row[col.property]) {
+          return moment(row[col.property]).format('YYYY-MM-DD')
         } else {
           return '无'
         }
       },
-      detail (scope) {
-        console.log(scope)
+      detail: function (scope) {
+        console.log(setPageIndex({
+          name: 'staffPageIndex',
+          value: this.currentPage
+        }))
         router.push({name: 'staffDetail', params: {id: scope.row.uid}})
       },
-      staffAdd () {
-        router.push({name: 'staffAdd'})
+      staffAdd: function () {
+        router.push({name: 'staffAdd', params: {index: this.currentPage}})
       }
     },
-    created () {
+    created: function () {
+      console.log('mounted', this.$route.params.index)
+      this.currentPage = parseInt(this.$route.params.index)
       this.getTableData()
     }
   }

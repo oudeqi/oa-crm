@@ -20,6 +20,7 @@
             </a>
           </div>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="modifyPass">修改密码</el-dropdown-item>
             <el-dropdown-item command="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -45,6 +46,23 @@
         <router-view></router-view>
       </el-col>
     </el-row>
+    <el-dialog class="modify-pass" @close="" title="修改密码" v-model="isModalOpen" :close-on-click-modal="false">
+      <el-form :model="pwd" label-width="100px">
+        <el-form-item label="旧密码">
+          <el-input type="text"  placeholder="请输入旧密码" v-model="pwd.old"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码">
+          <el-input type="text"  placeholder="请输入新密码" v-model="pwd.new"></el-input>
+        </el-form-item>
+        <el-form-item label="重复新密码">
+          <el-input type="text"  placeholder="请重复输入新密码" v-model="pwd.reNew"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="isModalOpen = false">取 消</el-button>
+        <el-button type="primary" @click="modifyPass">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -56,12 +74,18 @@
   * */
   import Vue from 'vue'
   import router from '@/router'
-  import {getToken, setToken, setUser} from '../const'
+  import {getToken, setToken, setUser, getUser} from '../const'
 
   export default {
     name: 'index',
     data () {
       return {
+        isModalOpen: false,
+        pwd: {
+          old: null,
+          new: null,
+          reNew: null
+        },
         defaultActive: null,
         defaultOpeneds: [],
         userMenus: [],
@@ -72,14 +96,44 @@
     },
     computed: {},
     methods: {
+      modifyPass: function () {
+        if (!this.pwd.old) {
+          this.$message.error('请输入原密码')
+          return
+        }
+        if (!this.pwd.new) {
+          this.$message.error('请输入新密码')
+          return
+        }
+        if (!this.pwd.reNew) {
+          this.$message.error('请重复输入新密码')
+          return
+        }
+        if (this.pwd.reNew !== this.pwd.new) {
+          this.$message.error('两次密码输入不一致')
+          return
+        }
+        this.$http.post('/v2/aut/crm/update/password', {
+          uid: getUser().id,
+          oldPassword: this.pwd.old,
+          newPassword: this.pwd.new
+        }).then((res) => {
+          console.log('修改密码', res)
+          if (res.body.errMessage) {
+            this.$message.error(res.body.errMessage)
+          } else {
+            this.$message({
+              message: '恭喜你，修改密码成功，请牢记新密码',
+              type: 'success'
+            })
+            this.isModalOpen = false
+          }
+        }).catch((res) => {
+          this.$message.error('服务器繁忙')
+        })
+      },
       tokenWrong () {
         router.push('/no-resource')
-        this.$alert('登录超时，请重新登录！', '提示', {
-          confirmButtonText: '确定',
-          callback: action => {
-            router.push('/login')
-          }
-        })
       },
       menuSelect () {
         let path = this.$route.path.split('/')
@@ -101,6 +155,12 @@
       handleDropdownItemClick (command) {
         if (command === 'logout') {
           this.logout()
+        }
+        if (command === 'modifyPass') {
+          this.pwd.old = null
+          this.pwd.new = null
+          this.pwd.reNew = null
+          this.isModalOpen = true
         }
       },
       logout () {
@@ -158,13 +218,21 @@
   }
 </script>
 
+<style lang="scss">
+  .modify-pass{
+    .el-dialog__body{
+      padding-bottom: 0;
+    }
+  }
+</style>
+
 <style lang="scss" scoped>
 
   @import "../scss/mixins.scss";
 
   .el-dropdown-menu{
     margin-top: 10px;
-    font-size: 15px;
+    font-size: 14px;
   }
   .warpper{
     height: 100%;

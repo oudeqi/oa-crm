@@ -8,7 +8,7 @@
     </div>
     <div class="filter">
       <div class="l">
-        <el-date-picker v-model="date" type="month" @change="handleDateChange" format="yyyy-MM-dd" placeholder="选择月份"> </el-date-picker>
+        <el-date-picker v-model="date" type="month" @change="handleDateChange" format="yyyy-MM" placeholder="选择月份"> </el-date-picker>
         <el-input placeholder="搜索员工姓名" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
       </div>
       <div class="r">
@@ -19,13 +19,14 @@
       <el-table :data="tableData">
         <el-table-column prop="nickName" label="姓名"></el-table-column>
         <el-table-column prop="baseMoney" label="基本工资" :formatter="currencyFormat"></el-table-column>
-        <el-table-column prop="leaveDeductMoney" label="请假扣除" :formatter="currencyFormat"></el-table-column>
-        <el-table-column prop="otherDeductMoney" label="其他扣除" :formatter="currencyFormat"></el-table-column>
-        <el-table-column prop="otherIncomeMoney" label="其他收入" :formatter="currencyFormat"></el-table-column>
-        <el-table-column prop="paidMoney" label="已发放" :formatter="currencyFormat"></el-table-column>
         <el-table-column prop="saleMoney" label="销售提成" :formatter="currencyFormat"></el-table-column>
         <el-table-column prop="serviceMoney" label="客服提成" :formatter="currencyFormat"></el-table-column>
-        <el-table-column prop="remarks" label="备注" :formatter="nullFormat"></el-table-column>
+        <el-table-column prop="teamSaleMoney" label="团队提成" :formatter="currencyFormat"></el-table-column>
+        <el-table-column prop="otherIncomeMoney" label="其他收入" :formatter="currencyFormat"></el-table-column>
+        <el-table-column prop="lateDeductMoney" label="迟到/早退" :formatter="currencyFormat"></el-table-column>
+        <el-table-column prop="leaveDeductMoney" label="请假扣除" :formatter="currencyFormat"></el-table-column>
+        <!--<el-table-column prop="paidMoney" label="已发放" :formatter="currencyFormat"></el-table-column>-->
+        <!--<el-table-column prop="remarks" label="备注" :formatter="nullFormat"></el-table-column>-->
       </el-table>
     </div>
     <div class="pagination" v-show="pageCount>1">

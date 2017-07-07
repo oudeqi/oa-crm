@@ -8,7 +8,7 @@
     </div>
     <div class="filter">
       <div class="l">
-        <el-date-picker v-model="date" type="month" @change="handleDateChange" format="yyyy-MM-dd" placeholder="选择月份"> </el-date-picker>
+        <el-date-picker v-model="date" type="month" @change="handleDateChange" format="yyyy-MM" placeholder="选择月份"></el-date-picker>
         <el-input placeholder="搜索姓名" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
       </div>
       <div class="r">
@@ -22,11 +22,36 @@
     <div class="main">
       <el-table :data="tableData">
         <el-table-column prop="nickName" label="姓名"></el-table-column>
-        <el-table-column prop="earlyOffCount" label="早退次数"></el-table-column>
-        <el-table-column prop="forgotClockCount" label="忘记打卡"></el-table-column>
-        <el-table-column prop="lateCount" label="迟到次数"></el-table-column>
-        <el-table-column prop="leaveCount" label="请假次数"></el-table-column>
-        <el-table-column prop="earlyOffCount" label="早退次数"></el-table-column>
+        <el-table-column label="迟到次数">
+          <template scope="scope">
+            <span :class="{warning: hasWarning(scope.row.lateCount)}">{{scope.row.lateCount}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="早退次数">
+          <template scope="scope">
+            <span :class="{warning: hasWarning(scope.row.earlyOffCount)}">{{scope.row.earlyOffCount}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="忘记打卡">
+          <template scope="scope">
+            <span :class="{warning: hasWarning(scope.row.forgotClockCount)}">{{scope.row.forgotClockCount}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="请假次数">
+          <template scope="scope">
+            <span :class="{warning: hasWarning(scope.row.leaveCount)}">{{scope.row.leaveCount}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="迟到/早退">
+          <template scope="scope">
+            <span :class="{warning: hasWarning(scope.row.lateDeductMoney)}">{{scope.row.lateDeductMoney/100 | currency}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="请假扣除">
+          <template scope="scope">
+            <span :class="{warning: hasWarning(scope.row.leaveDeductMoney)}">{{scope.row.leaveDeductMoney/100 | currency}}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
@@ -75,9 +100,14 @@
       }
     },
     created () {
+      let month = new Date().getMonth()
+      this.date = new Date().setMonth(month - 1)
       this.getTableData()
     },
     methods: {
+      hasWarning: function (val) {
+        return val > 0
+      },
       handleImportProgress () {
         this.importLoading = true
       },
@@ -88,7 +118,7 @@
           this.$message.error(res.errMessage)
         } else {
           this.$message({
-            message: res.data.str,
+            message: res.data,
             type: 'success'
           })
           this.getTableData()
@@ -102,6 +132,9 @@
         this.currentPage = 1
         this.getTableData()
         console.log('this.date', this.date)
+      },
+      currencyFormat: function (row, col) {
+        return '￥' + (row[col.property] / 100).toFixed(2)
       },
       getTableData () {
         this.$http.get('/v2/aut/crm/attendance/list', {
@@ -141,7 +174,13 @@
         }
       },
       detail (scope) {
-        router.push({name: 'checkWorkAttendanceDetail', params: {id: scope.row.uid}})
+        router.push({
+          name: 'checkWorkAttendanceDetail',
+          params: {
+            id: scope.row.uid,
+            date: new Date(this.timeStamp).getTime()
+          }
+        })
       },
       staffAdd () {
         router.push({name: 'staffAdd'})
@@ -151,7 +190,9 @@
 </script>
 
 <style lang="scss" scoped>
-
+  .warning{
+    color: red;
+  }
   .staff-list{}
   .head-pic{
     max-height: 40px;

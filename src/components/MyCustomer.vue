@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="main">
-      <el-table :data="tableData" v-loading.body="loading">
+      <el-table :data="tableData" :highlight-current-row="true" v-loading.body="loading" :row-class-name="tableRowClassName">
         <el-table-column prop="customerName" label="平台名称" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="cityCodeName" label="地区" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="mainPerson" label="平台负责人"></el-table-column>
@@ -34,10 +34,10 @@
         <el-table-column prop="mainWeChat" label="微信号" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="status" label="客户状态" :formatter="statusFormatter"></el-table-column>
         <el-table-column prop="signType" label="客户类型" :formatter="customerTypeFormatter" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="remarks" label="备注" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="remarks" label="备注" :formatter="nullFormat" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="createDate" label="创建时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="lastOperTime" label="操作时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="操作" min-width="130">
+        <el-table-column label="操作" min-width="190">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
             <el-button type="text" @click="openModal(scope)">添加跟进</el-button>
@@ -111,14 +111,21 @@
     },
     computed: {},
     methods: {
-    	changeSigned(sco) {
-				router.push({
-					name: 'myCustomerSignedFromCustomer',
-					params: {
-						customerid: sco.row.id
-					}
-				})
-			},
+      tableRowClassName: function (row) {
+        if (row.remind === 1 || row.remind === '1') {
+          return 'warning'
+        } else {
+          return ''
+        }
+      },
+      changeSigned (sco) {
+        router.push({
+          name: 'myCustomerSignedFromCustomer',
+          params: {
+            customerid: sco.row.id
+          }
+        })
+      },
       handleImportProgress () {
         this.importLoading = true
       },
@@ -165,7 +172,6 @@
           label: '签约',
           value: 7
         }]
-//        this.state = this.states[0].value
       },
       getSortArr () {
         this.sortArr = [{
@@ -181,16 +187,9 @@
           label: '急需处理排序',
           value: 3
         }]
-//        this.sortType = this.sortArr[0].value
       },
       getTableData () {
         this.loading = false
-//        let testArr = '{"data":{"pageSize":20,"pageIndex":1,"rowCount":9,"data":[{"id":8,"customerName":"昆山招聘","cityCode":"320583","cityCodeName":"昆山市","mainPerson":"李彦臣","mainPhoneNumber":"18550118707","mainWeChat":"moxian118","subPerson":"","subPhoneNumber":"","subWeChat":"","job":"","status":1,"signType":0,"remarks":"","createDate":1490249495000,"lastOperTime":1490249495000,"createUid":2,"contactUid":1,"contactName":null,"deptName":null,"logs":null,"beforeContactUser":null,"applyStatus":0,"publicTime":1504688189000,"remind":0,"tripType":2,"ertaiType":0,"bookType":0,"stock":0,"recommendId":0},{"id":3613,"customerName":"固原大城小事","cityCode":"640401","cityCodeName":"市辖区","mainPerson":"韩总","mainPhoneNumber":"","mainWeChat":"xhanaimiaox","subPerson":"","subPhoneNumber":"","subWeChat":"","job":"负责人","status":6,"signType":0,"remarks":"目前正在跟踪中","createDate":1490255782000,"lastOperTime":1490255782000,"createUid":1,"contactUid":1,"contactName":null,"deptName":null,"logs":null,"beforeContactUser":null,"applyStatus":0,"publicTime":null,"remind":0,"tripType":0,"ertaiType":0,"bookType":0,"stock":0,"recommendId":0},{"id":3614,"customerName":"入围广宁网","cityCode":"441223","cityCodeName":"广宁县","mainPerson":"邓总","mainPhoneNumber":"13929803806","mainWeChat":"gm13929803806","subPerson":"","subPhoneNumber":"","subWeChat":"","job":"负责人","status":6,"signType":0,"remarks":"目前正在跟踪中","createDate":1490255782000,"lastOperTime":1490255782000,"createUid":1,"contactUid":1,"contactName":null,"deptName":null,"logs":null,"beforeContactUser":null,"applyStatus":0,"publicTime":null,"remind":0,"tripType":0,"ertaiType":0,"bookType":0,"stock":0,"recommendId":0},{"id":3615,"customerName":"五邑特搜","cityCode":"440701","cityCodeName":"市辖区","mainPerson":"Peter","mainPhoneNumber":"","mainWeChat":"QQ619325900","subPerson":"","subPhoneNumber":"","subWeChat":"","job":"负责人","status":5,"signType":0,"remarks":"目前正在跟踪中","createDate":1490255782000,"lastOperTime":1490255782000,"createUid":1,"contactUid":1,"contactName":null,"deptName":null,"logs":null,"beforeContactUser":null,"applyStatus":0,"publicTime":null,"remind":0,"tripType":0,"ertaiType":0,"bookType":0,"stock":0,"recommendId":0},{"id":3616,"customerName":"寻信饮食安全","cityCode":"140101","cityCodeName":"市辖区","mainPerson":"田老师","mainPhoneNumber":"","mainWeChat":"Tninggn","subPerson":"","subPhoneNumber":"","subWeChat":"","job":"负责人","status":5,"signType":0,"remarks":"只想拿100张票，价格觉得贵了还","createDate":1490255782000,"lastOperTime":1490255782000,"createUid":1,"contactUid":1,"contactName":null,"deptName":null,"logs":null,"beforeContactUser":null,"applyStatus":0,"publicTime":null,"remind":0,"tripType":0,"ertaiType":0,"bookType":0,"stock":0,"recommendId":0},{"id":3617,"customerName":"南宁微生活","cityCode":"450101","cityCodeName":"市辖区","mainPerson":"漫漫（财务）","mainPhoneNumber":"18577178467","mainWeChat":"zwhd701","subPerson":"","subPhoneNumber":"","subWeChat":"","job":"财务","status":7,"signType":0,"remarks":"3月中旬拿了500张海南票做活动","createDate":1490255782000,"lastOperTime":1490255782000,"createUid":1,"contactUid":1,"contactName":null,"deptName":null,"logs":null,"beforeContactUser":null,"applyStatus":0,"publicTime":null,"remind":0,"tripType":0,"ertaiType":0,"bookType":0,"stock":0,"recommendId":0},{"id":3543,"customerName":"博真微生活","cityCode":"510101","cityCodeName":"市辖区","mainPerson":"刘劲松","mainPhoneNumber":"13568281288","mainWeChat":"I627638","subPerson":"","subPhoneNumber":"","subWeChat":"","job":"负责人","status":6,"signType":0,"remarks":"目前正在跟踪中，近期会来公司","createDate":1490255651000,"lastOperTime":1490255651000,"createUid":1,"contactUid":1,"contactName":null,"deptName":null,"logs":null,"beforeContactUser":null,"applyStatus":0,"publicTime":null,"remind":0,"tripType":0,"ertaiType":0,"bookType":0,"stock":0,"recommendId":0},{"id":6362,"customerName":"佳雨传媒","cityCode":"330101","cityCodeName":"市辖区","mainPerson":"喻情","mainPhoneNumber":"15179765630","mainWeChat":"TM15179765630","subPerson":"","subPhoneNumber":"","subWeChat":"","job":"","status":4,"signType":0,"remarks":"","createDate":1490259238000,"lastOperTime":1490259238000,"createUid":1,"contactUid":1,"contactName":null,"deptName":null,"logs":null,"beforeContactUser":null,"applyStatus":0,"publicTime":null,"remind":0,"tripType":0,"ertaiType":0,"bookType":0,"stock":0,"recommendId":0},{"id":6368,"customerName":"玉屏那些事儿","cityCode":"522223","cityCodeName":"玉屏侗族自治县","mainPerson":"向运亮","mainPhoneNumber":"13638563285","mainWeChat":"XiangYunL123","subPerson":"","subPhoneNumber":"","subWeChat":"","job":"负责人","status":1,"signType":0,"remarks":"在跟踪中","createDate":1490259380000,"lastOperTime":1490259380000,"createUid":1,"contactUid":1,"contactName":null,"deptName":null,"logs":null,"beforeContactUser":null,"applyStatus":0,"publicTime":null,"remind":0,"tripType":0,"ertaiType":0,"bookType":0,"stock":0,"recommendId":0}],"pageCount":1}}'
-//        let xx = JSON.parse(testArr)
-//        console.log('获取我的客户列表', xx)
-//        this.tableData = xx.data.data
-//        this.total = xx.data.rowCount
-//        this.pageCount = xx.data.pageCount
         this.$http.get('/v1/aut/crm/my/customer', {
           params: {
             pageSize: this.pageSize,
@@ -297,6 +296,13 @@
           return ''
         }
       },
+      nullFormat (row, col) {
+        if (row[col.property]) {
+          return row[col.property]
+        } else {
+          return '无'
+        }
+      },
       stateChange () {
         this.currentPage = 1
         this.getTableData()
@@ -313,8 +319,15 @@
     }
   }
 </script>
-
+<style lang="scss">
+  .myCustomer{
+    .warning{
+      background-color: pink;
+    }
+  }
+</style>
 <style lang="scss" scoped>
+
   .myCustomer{
     .breadcrumb{
       padding: 20px;

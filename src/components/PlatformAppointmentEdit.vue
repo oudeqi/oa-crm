@@ -16,7 +16,7 @@
         <div class="form-warpper">
           <el-form :model="appointmentInfo" label-width="100px" class="demo-ruleForm">
             <el-form-item label="选择站点">
-              <el-select v-model="station" clearable remote placeholder="请搜索: 站点 / 联系人" :remote-method="searchStation" :loading="loading">
+              <el-select v-model="station" remote placeholder="请搜索: 站点 / 联系人" :remote-method="searchStation" :loading="loading">
                 <el-option v-for="item in stations" :key="item.id" :label="item.customerName" :value="item"></el-option>
               </el-select>
             </el-form-item>

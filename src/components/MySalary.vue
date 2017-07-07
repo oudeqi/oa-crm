@@ -2,24 +2,21 @@
   <div class="staff-list">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>考勤</el-breadcrumb-item>
-        <el-breadcrumb-item>请假列表</el-breadcrumb-item>
+        <el-breadcrumb-item>个人中心</el-breadcrumb-item>
+        <el-breadcrumb-item>我的工资</el-breadcrumb-item>
       </el-breadcrumb>
-    </div>
-    <div class="filter">
-      <div class="l">
-        <el-date-picker v-model="date" type="month" @change="handleDateChange" format="yyyy-MM" placeholder="选择月份"> </el-date-picker>
-        <el-input placeholder="搜索姓名" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
-      </div>
     </div>
     <div class="main">
       <el-table :data="tableData">
         <el-table-column prop="nickName" label="姓名"></el-table-column>
-        <el-table-column prop="date" :formatter="dateFormat" label="日期"></el-table-column>
-        <el-table-column prop="goToWorkDate" :formatter="dateFormat" label="上班时间"></el-table-column>
-        <el-table-column prop="goOffWorkDate" :formatter="dateFormat" label="下班时间"></el-table-column>
-        <el-table-column prop="isLeave" :formatter="boolFormat" label="是否请假"></el-table-column>
-        <el-table-column prop="remarks" :formatter="nullFormat" :show-overflow-tooltip="true" label="备注"></el-table-column>
+        <el-table-column prop="date" label="月份" :formatter="dateFormat"></el-table-column>
+        <el-table-column prop="baseMoney" label="基本工资" :formatter="currencyFormat"></el-table-column>
+        <el-table-column prop="saleMoney" label="销售提成" :formatter="currencyFormat"></el-table-column>
+        <el-table-column prop="serviceMoney" label="客服提成" :formatter="currencyFormat"></el-table-column>
+        <el-table-column prop="teamSaleMoney" label="团队提成" :formatter="currencyFormat"></el-table-column>
+        <el-table-column prop="otherIncomeMoney" label="其他收入" :formatter="currencyFormat"></el-table-column>
+        <el-table-column prop="lateDeductMoney" label="迟到/早退" :formatter="currencyFormat"></el-table-column>
+        <el-table-column prop="lateDeductMoney" label="请假扣除" :formatter="currencyFormat"></el-table-column>
       </el-table>
     </div>
     <div class="pagination" v-show="pageCount>1">
@@ -32,33 +29,18 @@
 
 <script>
   import moment from 'moment'
-  import router from '../router'
   export default {
-    name: 'leave',
+    name: 'mySalary',
     data () {
       return {
         tableData: null,
-        keywords: '',
         currentPage: 1,
         pageSize: 20,
         total: null,
-        pageCount: 0,
-        date: null
-      }
-    },
-    computed: {
-      timeStamp: function () {
-        if (this.date) {
-          return moment(new Date(this.date)).format('YYYY-MM-DD HH:mm:ss')
-        } else {
-          let month = new Date().getMonth()
-          return moment(new Date().setMonth(month - 1)).format('YYYY-MM-DD HH:mm:ss')
-        }
+        pageCount: 0
       }
     },
     created () {
-      let month = new Date().getMonth()
-      this.date = new Date().setMonth(month - 1)
       this.getTableData()
     },
     methods: {
@@ -68,15 +50,13 @@
         console.log('this.date', this.date)
       },
       getTableData () {
-        this.$http.get('/v2/aut/crm/attendance/leave/list', {
+        this.$http.get('/v2/aut/crm/salary/list/my', {
           params: {
             pageSize: this.pageSize,
-            pageIndex: this.currentPage,
-            search: this.keywords,
-            date: this.timeStamp
+            pageIndex: this.currentPage
           }
         }).then(res => {
-          console.log('获取考勤列表', res)
+          console.log('获取工资列表', res)
           if (res.body.errMessage) {
             this.$message.error(res.body.errMessage)
           } else {
@@ -85,7 +65,7 @@
             this.pageCount = res.body.data.pageCount
           }
         }).catch(res => {
-          console.log('获取考勤列表异常', res)
+          console.log('获取工资列表异常', res)
           this.$message.error('服务器繁忙！')
         })
       },
@@ -97,25 +77,11 @@
         this.currentPage = val
         this.getTableData()
       },
-      detail (scope) {
-        router.push({name: 'checkWorkAttendanceDetail', params: {id: scope.row.uid}})
-      },
-      dateFormat (row, col) {
-        let fm = 'HH:mm:ss'
-        if (col.property === 'date') {
-          fm = 'YYYY-MM-DD'
-        }
-        if (row[col.property]) {
-          return moment(row[col.property]).format(fm)
+      dateFormat (row) {
+        if (row.date) {
+          return moment(row.date).format('YYYY-MM')
         } else {
           return '无'
-        }
-      },
-      boolFormat (row, col) {
-        if (row[col.property] === 1 || row[col.property] === '1') {
-          return '是'
-        } else {
-          return '否'
         }
       },
       nullFormat (row, col) {
@@ -124,6 +90,9 @@
         } else {
           return '无'
         }
+      },
+      currencyFormat: function (row, col) {
+        return '￥' + (row[col.property] / 100).toFixed(2)
       }
     }
   }

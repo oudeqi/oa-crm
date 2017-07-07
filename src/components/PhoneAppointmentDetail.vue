@@ -66,28 +66,10 @@
             } else if (this.detail.status === 2) {
               this.$set(this.detail, 'statusName', '已出行')
             }
-            this.getLine()
           }
         }).catch(res => {
           console.log('获取预约详情异常', res)
           this.$message.error('服务器繁忙')
-        })
-      },
-      getLine () {
-        this.$http.get('/v2/crm/line/list').then((res) => {
-          console.log('获取线路列表', res)
-          if (res.body.errMessage) {
-            this.$message.error(res.body.errMessage)
-          } else {
-            res.body.data.forEach((item) => {
-              if (this.detail.lineId === item.id) {
-                this.$set(this.detail, 'lineName', item.name)
-              }
-            })
-          }
-        }).catch((res) => {
-          console.log('获取线路列表异常', res)
-          this.$message.error('获取线路列表异常，请刷新重试！')
         })
       }
     },

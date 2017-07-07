@@ -13,6 +13,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">登录</el-button>
+          <!--<el-button type="text" style="color: #999; text-decoration: underline;" @click="switchOld">切换到旧版</el-button>-->
         </el-form-item>
       </el-form>
     </div>
@@ -40,6 +41,9 @@ export default {
     }
   },
   methods: {
+    switchOld: function () {
+      location.href = 'http://crm.2tai.net'
+    },
     onSubmit () {
       if (this.login.userName === '' || this.login.password === '') {
         return
@@ -77,6 +81,9 @@ export default {
 
 <style lang="scss" scoped>
   .warpper{
+    min-height: 100%;
+    background-color: #fff;
+    padding: 0 20px;
     .header{
       border-bottom: 1px solid #ddd;
       h1{

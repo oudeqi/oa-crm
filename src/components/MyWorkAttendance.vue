@@ -2,23 +2,40 @@
   <div class="staff-list">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>考勤</el-breadcrumb-item>
-        <el-breadcrumb-item>请假列表</el-breadcrumb-item>
+        <el-breadcrumb-item>个人中心</el-breadcrumb-item>
+        <el-breadcrumb-item>我的考勤</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="filter">
       <div class="l">
-        <el-date-picker v-model="date" type="month" @change="handleDateChange" format="yyyy-MM" placeholder="选择月份"> </el-date-picker>
-        <el-input placeholder="搜索姓名" icon="search" v-model="keywords" :on-icon-click="search"></el-input>
+        <el-date-picker v-model="date" type="month" @change="handleDateChange" format="yyyy-MM" placeholder="选择月份"></el-date-picker>
       </div>
     </div>
     <div class="main">
       <el-table :data="tableData">
-        <el-table-column prop="nickName" label="姓名"></el-table-column>
         <el-table-column prop="date" :formatter="dateFormat" label="日期"></el-table-column>
-        <el-table-column prop="goToWorkDate" :formatter="dateFormat" label="上班时间"></el-table-column>
-        <el-table-column prop="goOffWorkDate" :formatter="dateFormat" label="下班时间"></el-table-column>
-        <el-table-column prop="isLeave" :formatter="boolFormat" label="是否请假"></el-table-column>
+        <el-table-column prop="date" :formatter="weekFormat" label="星期"></el-table-column>
+        <el-table-column prop="nickName" label="姓名"></el-table-column>
+        <el-table-column label="上班时间">
+          <template scope="scope">
+            <span :class="{warning: isLate(scope)}">{{scope.row.goToWorkDate | date("HH:mm:ss")}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="下班时间">
+          <template scope="scope">
+            <span :class="{warning: isLeaveEarly(scope)}">{{scope.row.goOffWorkDate | date("HH:mm:ss")}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="迟到/早退">
+          <template scope="scope">
+            <span :class="{warning: hasWarning(scope.row.lateDeductMoney)}">{{scope.row.lateDeductMoney/100 | currency}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="请假扣除">
+          <template scope="scope">
+            <span :class="{error: hasWarning(scope.row.leaveDeductMoney)}">{{scope.row.leaveDeductMoney/100 | currency}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="remarks" :formatter="nullFormat" :show-overflow-tooltip="true" label="备注"></el-table-column>
       </el-table>
     </div>
@@ -32,9 +49,9 @@
 
 <script>
   import moment from 'moment'
-  import router from '../router'
+  moment.locale('zh-cn')
   export default {
-    name: 'leave',
+    name: 'myWorkAttendance',
     data () {
       return {
         tableData: null,
@@ -62,21 +79,36 @@
       this.getTableData()
     },
     methods: {
+      hasWarning: function (val) {
+        return val > 0
+      },
+      isLate: function (scope) {
+        let time = scope.row.goToWorkDate
+        return new Date(time).setHours(9, 33) < time
+      },
+      isLeaveEarly: function (scope) {
+        let time = scope.row.goOffWorkDate
+        return new Date(time).setHours(6, 30) > time
+      },
+      hasLeaveDeductMoney: function (scope) {
+        return scope.row.leaveDeductMoney > 0
+      },
       handleDateChange: function () {
         this.currentPage = 1
         this.getTableData()
         console.log('this.date', this.date)
       },
       getTableData () {
-        this.$http.get('/v2/aut/crm/attendance/leave/list', {
+        this.$http.get('/v2/aut/crm/attendance/list/my', {
           params: {
             pageSize: this.pageSize,
             pageIndex: this.currentPage,
             search: this.keywords,
-            date: this.timeStamp
+            date: this.timeStamp,
+            uid: this.$route.params.id
           }
         }).then(res => {
-          console.log('获取考勤列表', res)
+          console.log('获取个人考勤', res)
           if (res.body.errMessage) {
             this.$message.error(res.body.errMessage)
           } else {
@@ -85,20 +117,20 @@
             this.pageCount = res.body.data.pageCount
           }
         }).catch(res => {
-          console.log('获取考勤列表异常', res)
+          console.log('获取个人考勤异常', res)
           this.$message.error('服务器繁忙！')
         })
-      },
-      search () {
-        this.currentPage = 1
-        this.getTableData()
       },
       pageIndexChange (val) {
         this.currentPage = val
         this.getTableData()
       },
-      detail (scope) {
-        router.push({name: 'checkWorkAttendanceDetail', params: {id: scope.row.uid}})
+      weekFormat: function (row, col) {
+        if (row[col.property]) {
+          return moment(row[col.property]).format('dddd')
+        } else {
+          return '无'
+        }
       },
       dateFormat (row, col) {
         let fm = 'HH:mm:ss'
@@ -112,11 +144,14 @@
         }
       },
       boolFormat (row, col) {
-        if (row[col.property] === 1 || row[col.property] === '1') {
+        if (row[col.property] === 1 && row[col.property] === '1') {
           return '是'
         } else {
           return '否'
         }
+      },
+      currencyFormat: function (row, col) {
+        return '￥' + (row[col.property] / 100).toFixed(2)
       },
       nullFormat (row, col) {
         if (row[col.property]) {
@@ -130,7 +165,12 @@
 </script>
 
 <style lang="scss" scoped>
-
+  .warning{
+    color: red;
+  }
+  .error{
+    color: red;
+  }
   .staff-list{}
   .head-pic{
     max-height: 40px;

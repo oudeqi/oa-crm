@@ -309,7 +309,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 /v2/aut/crm/salary/details?id=1 get 获取指定ID的工资详情
 
-/v2/aut/crm/capital/add post 添加资金流水信息
+// TODO /v2/aut/crm/capital/add post 添加资金流水信息
 {
   "typeId": 0,
   "money": 0,
@@ -323,7 +323,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   "createDate": null
 }
 
-/v2/aut/crm/capital/update post 更新资金流水信息
+// TODO /v2/aut/crm/capital/update post 更新资金流水信息
 {
   "id": 1,
   "typeId": 0,
@@ -339,7 +339,15 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 }
 
 // TODO /v2/aut/crm/capital/list get 获取资金流水列表
+   // TODO ?date=2017-05-01 传date 去当月列表，不传自动按月份分组列表
 
-/v2/aut/crm/capital/details?id=1 get 获取指定ID的资金流水详情
+// TODO /v2/aut/crm/capital/details?id=1 get 获取指定ID的资金流水详情
 
+// TODO /v2/crm/capital/type/list //收支类目
+
+// TODO /v2/crm/role/group/department/list  //角色
+
+// TODO /v2/aut/crm/attendance/list/my 我的考勤列表
+
+// TODO /v2/aut/crm/salary/list/my get 获取我的工资列表
 */

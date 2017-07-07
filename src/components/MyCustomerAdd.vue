@@ -7,14 +7,13 @@
         <el-breadcrumb-item>新建客户</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-
     <div class="main">
       <div class="base-info">
         <h3>基本信息</h3>
         <div class="form-warpper">
           <el-form :model="customerInfo" ref="base" label-width="100px" class="demo-ruleForm">
             <el-form-item label="平台名称" prop="customerName">
-              <el-input v-model="customerInfo.customerName" @blur="checkCustomerName"></el-input>
+              <el-input v-model="customerInfo.customerName" @change="search" @blur="checkCustomerName"></el-input>
             </el-form-item>
             <el-form-item label="平台区域" prop="cityCode">
               <el-cascader placeholder="请选择：试试搜索？" expand-trigger="hover" :options="cityOptions"
@@ -44,9 +43,7 @@
             </el-form-item>
           </el-form>
         </div>
-      </div>
-      <div class="follow-info">
-        <h3>其他人联系信息</h3>
+        <h3>其他联系人信息</h3>
         <div class="form-warpper">
           <el-form :model="customerInfo" ref="other" label-width="100px" class="demo-ruleForm">
             <el-form-item label="联系人" prop="subPerson">
@@ -65,6 +62,13 @@
           </el-form>
         </div>
       </div>
+      <div class="follow-info">
+        <h3>平台搜索结果</h3>
+        <ul class="search-result">
+          <li v-for="item in searchResult" :key="item.id"><p v-html="item.nameHtml"></p></li>
+        </ul>
+        <p class="no-result" v-show="searchResult.length == 0">暂无结果</p>
+      </div>
     </div>
   </div>
 </template>
@@ -76,6 +80,7 @@
     data () {
       return {
         states: null,
+        searchResult: [],
         customerInfo: {
           customerName: null,
           cityCode: [],
@@ -93,6 +98,34 @@
       }
     },
     methods: {
+      trim: function (str) {
+        return str.replace(/(^\s*)|(\s*$)/g, '')
+      },
+      search: function () {
+        this.$http.get('/v1/aut/crm/customer/search', {
+          params: {
+            search: this.trim(this.customerInfo.customerName)
+          }
+        }).then(res => {
+          console.log('搜索平台', res)
+          if (res.body.errMessage) {
+            this.searchResult = []
+          } else {
+            res.body.data.forEach((value) => {
+              let html = '<span style="color: red;">' + this.trim(this.customerInfo.customerName) + '</span>'
+              if (value.customerName) {
+                value.nameHtml = value.customerName.replace(this.trim(this.customerInfo.customerName), html)
+              } else {
+                value.nameHtml = html
+              }
+            })
+            this.searchResult = res.body.data
+          }
+        }).catch(res => {
+          console.log('搜索平台失败', res)
+          this.searchResult = []
+        })
+      },
       back () {
         router.go(-1)
       },
@@ -214,6 +247,29 @@
   @import "../scss/_mixins.scss";
 
   .my-customer-add{
+    .search-result{
+      margin: 0;
+      padding: 0;
+      padding-left: 20px;
+      list-style: none;
+      font-size: 14px;
+      margin-top: 15px;
+      li{
+        margin: 0;
+        padding: 0;
+        margin-bottom: 10px;
+        p{
+          margin: 0;
+          padding: 4px 14px;
+          line-height: 1.3;
+        }
+      }
+    }
+    .no-result{
+      color: #ccc;
+      padding-left: 30px;
+      font-size: 15px;
+    }
     .breadcrumb{
       padding: 20px;
       background: #fbfbfb;
@@ -245,14 +301,14 @@
       }
       .base-info{
         float: left;
-        width: 30%;
+        width: 40%;
         padding-right: 8%;
         padding-left: 7%;
 
       }
       .follow-info{
         float: left;
-        width: 55%;
+        width: 45%;
       }
     }
   }

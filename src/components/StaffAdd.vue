@@ -3,7 +3,9 @@
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>设置</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/setup/staff' }">员工列表</el-breadcrumb-item>
+        <el-breadcrumb-item>
+          <span @click="goList">员工列表</span>
+        </el-breadcrumb-item>
         <el-breadcrumb-item>添加员工</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -18,10 +20,13 @@
             <el-form-item label="员工姓名">
               <el-input v-model="staffInfo.nickName" placeholder="请输入姓名"></el-input>
             </el-form-item>
+            <el-form-item label="员工工号">
+              <el-input v-model="staffInfo.serialNumber" placeholder="请输入打卡机给出的工号"></el-input>
+            </el-form-item>
             <el-form-item label="员工角色">
-              <el-select v-model="staffInfo.roleId" placeholder="请选择角色" @change="">
-                <el-option v-for="item in role" :key="item.id" :label="item.name" :value="item.id"></el-option>
-              </el-select>
+              <el-cascader placeholder="请选择角色" expand-trigger="click" :options="roleOptions"
+                           filterable v-model="id"
+                           @change="handleCityCodeChange" :props="{value:'id',label:'name',children:'data'}"></el-cascader>
             </el-form-item>
             <el-form-item label="电话号码">
               <el-input v-model="staffInfo.phoneNumber" placeholder="请输入电话号码"></el-input>
@@ -50,46 +55,78 @@
   import router from '../router'
   export default {
     name: 'staffAdd',
-    data () {
+    data: function () {
       return {
+        listPageIndex: this.$route.params.index,
         staffInfo: {
           headIconUrl: 'http://cdn.2tai.net/app/crm_head_defuat.png',
           nickName: null,
+          serialNumber: null,
           phoneNumber: null,
           joinDate: null,
           roleId: null,
-          password: null,
-          groupId: 0,
-          deptId: 0,
+          password: '123456',
+          groupId: null,
+          deptId: null,
           level: 0,
           superiorId: 0,
           createDate: null,
           leaveDate: null,
           baseSalary: null
         },
-        role: []
+        id: [],
+        roleOptions: []
       }
     },
     methods: {
-      back () {
-        router.go(-1)
+      back: function () {
+        console.log(this.$router)
+//        router.go(-1)
+        this.$router.go(-1)
       },
-      getRole () {
-        this.$http.get('/v2/crm/role/list').then(res => {
-          console.log('获取角色信息', res)
+      goList: function () {
+        router.push({name: 'staffList', params: {index: this.listPageIndex}})
+      },
+      handleCityCodeChange: function (value) {
+        console.log(value)
+        if (value[0]) {
+          this.staffInfo.roleId = value[0]
+          if (value[1]) {
+            this.staffInfo.groupId = value[1]
+            if (value[2]) {
+              this.staffInfo.deptId = value[2]
+            }
+          }
+        }
+      },
+      getRole: function () {
+        this.$http.get('/v2/crm/role/group/department/list').then(res => {
+          console.log('获取部门角色信息', res)
           if (res.body.errMessage) {
             this.$message.error(res.body.errMessage)
           } else {
-            this.role = res.body.data
-            this.staffInfo.roleId = this.role[0].id
+            res.body.data.forEach((value) => {
+              if (value.data && value.data.length > 0) {
+                value.data.forEach((val) => {
+                  val.name = val.groupName
+                  if (val.data && val.data.length > 0) {
+                    val.data.forEach((v) => {
+                      v.name = v.deptName
+                      v.data = null
+                    })
+                  }
+                })
+              }
+            })
+            this.roleOptions = res.body.data
           }
         }).catch(res => {
-          console.log('获取角色信息异常', res)
+          console.log('获取部门角色信息异常', res)
           this.$message.error('服务器繁忙')
         })
       },
-      submitForm () {
-        if (!this.staffInfo.nickName || !this.staffInfo.phoneNumber || !this.staffInfo.roleId || !this.staffInfo.joinDate || !this.staffInfo.password || !this.staffInfo.baseSalary) {
+      submitForm: function () {
+        if (!this.staffInfo.nickName || !this.staffInfo.phoneNumber || !this.staffInfo.serialNumber || !this.staffInfo.roleId || !this.staffInfo.joinDate || !this.staffInfo.password || !this.staffInfo.baseSalary) {
           this.$message.error('信息填写不完整')
           return false
         }
@@ -102,6 +139,7 @@
             headIconUrl: this.staffInfo.headIconUrl,
             nickName: this.staffInfo.nickName,
             phoneNumber: this.staffInfo.phoneNumber,
+            serialNumber: this.staffInfo.serialNumber,
             joinDate: new Date(this.staffInfo.joinDate).getTime(),
             roleId: this.staffInfo.roleId,
             password: this.staffInfo.password,
@@ -130,7 +168,7 @@
         }).catch(() => {})
       }
     },
-    created () {
+    created: function () {
       this.getRole()
     }
   }

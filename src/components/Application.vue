@@ -35,7 +35,7 @@
         <el-table-column prop="customerName" label="平台名称"></el-table-column>
         <el-table-column prop="mainPerson" label="负责人"></el-table-column>
         <el-table-column prop="cityCodeName" label="地区"></el-table-column>
-        <el-table-column prop="createDate" label="申请时间" :formatter="dateFormat"></el-table-column>
+        <el-table-column prop="createDate" label="申请时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作及状态" min-width="250">
           <template scope="scope">
             <template v-if="scope.row.status==1">

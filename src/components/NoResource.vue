@@ -11,8 +11,18 @@
 </template>
 
 <script>
+
+  import router from '@/router'
   export default {
-    name: 'noResource'
+    name: 'noResource',
+    created: function () {
+      this.$alert('登录超时，请重新登录！', '提示', {
+        confirmButtonText: '确定',
+        callback: action => {
+          router.push('/login')
+        }
+      })
+    }
   }
 </script>
 

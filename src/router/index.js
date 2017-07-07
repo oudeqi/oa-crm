@@ -40,6 +40,11 @@ import Salary from '@/components/Salary'
 import CheckWorkAttendanceDetail from '@/components/CheckWorkAttendanceDetail'
 import Leave from '@/components/Leave'
 import CapitalFlow from '@/components/CapitalFlow'
+import CapitalFlowAdd from '@/components/CapitalFlowAdd'
+import CapitalFlowList from '@/components/CapitalFlowList'
+import CapitalFlowEdit from '@/components/CapitalFlowEdit'
+import MyWorkAttendance from '@/components/MyWorkAttendance'
+import MySalary from '@/components/MySalary'
 
 Vue.use(Router)
 
@@ -116,14 +121,14 @@ export default new Router({
           component: MyCustomerSignedFor
         },
         {
-        	path: '/customer/signed-update/:id',
-        	name: 'myCustomerSignedUpdate',
-        	component:MyCustomerSignedUpdate
+          path: '/customer/signed-update/:id',
+          name: 'myCustomerSignedUpdate',
+          component: MyCustomerSignedUpdate
         },
         {
-        	path: '/customer/signed-fromcustomer/:customerid',
-        	name: 'myCustomerSignedFromCustomer',
-        	component:MyCustomerSignedFromCustomer 	
+          path: '/customer/signed-fromcustomer/:customerid',
+          name: 'myCustomerSignedFromCustomer',
+          component: MyCustomerSignedFromCustomer
         },
         {
           path: '/customer/signed-add',
@@ -135,13 +140,18 @@ export default new Router({
           name: 'application',
           component: Application
         },
+        // {
+        //   path: '/setup/staff',
+        //   name: 'staffList',
+        //   component: StaffList
+        // },
         {
-          path: '/setup/staff',
+          path: '/setup/staff/i/:index',
           name: 'staffList',
           component: StaffList
         },
         {
-          path: '/setup/staff/add',
+          path: '/setup/staff/add/:index',
           name: 'staffAdd',
           component: StaffAdd
         },
@@ -151,12 +161,17 @@ export default new Router({
           component: StaffDetail
         },
         {
-          path: '/setup/staff/detail/:id/edit',
+          path: '/setup/staff/detail/:id/edit/:index',
           name: 'staffEdit',
           component: StaffEdit
         },
+        // {
+        //   path: '/setup/station',
+        //   name: 'stationList',
+        //   component: StationList
+        // },
         {
-          path: '/setup/station',
+          path: '/setup/station/i/:index',
           name: 'stationList',
           component: StationList
         },
@@ -166,7 +181,7 @@ export default new Router({
           component: StationDetail
         },
         {
-          path: '/setup/station/detail/:id/edit',
+          path: '/setup/station/detail/:id/edit/:index',
           name: 'stationEdit',
           component: StationEdit
         },
@@ -191,7 +206,7 @@ export default new Router({
           component: PhoneAppointmentEdit
         },
         {
-          path: '/application/phone/record/:id',
+          path: '/appointment/phone/record/:id',
           name: 'phoneAppointmentRecord',
           component: PhoneAppointmentRecord
         },
@@ -201,22 +216,22 @@ export default new Router({
           component: PlatformAppointment
         },
         {
-          path: '/application/platform/add',
+          path: '/appointment/platform/add',
           name: 'platformAppointmentAdd',
           component: PlatformAppointmentAdd
         },
         {
-          path: '/application/platform/detail/:id',
+          path: '/appointment/platform/detail/:id',
           name: 'platformAppointmentDetail',
           component: PlatformAppointmentDetail
         },
         {
-          path: '/application/platform/detail/:id/edit',
+          path: '/appointment/platform/detail/:id/edit',
           name: 'platformAppointmentEdit',
           component: PlatformAppointmentEdit
         },
         {
-          path: '/application/platform/record/:id',
+          path: '/appointment/platform/record/:id',
           name: 'platformAppointmentRecord',
           component: PlatformAppointmentRecord
         },
@@ -231,7 +246,7 @@ export default new Router({
           component: CheckWorkAttendance
         },
         {
-          path: '/work-attendance/detail/:id',
+          path: '/work-attendance/detail/:id/:date',
           name: 'checkWorkAttendanceDetail',
           component: CheckWorkAttendanceDetail
         },
@@ -249,6 +264,31 @@ export default new Router({
           path: '/capital-flow',
           name: 'capitalFlow',
           component: CapitalFlow
+        },
+        {
+          path: '/capital-flow/list/:date',
+          name: 'capitalFlowList',
+          component: CapitalFlowList
+        },
+        {
+          path: '/capital-flow/edit/:id',
+          name: 'capitalFlowEdit',
+          component: CapitalFlowEdit
+        },
+        {
+          path: '/capital-flow/add',
+          name: 'capitalFlowAdd',
+          component: CapitalFlowAdd
+        },
+        {
+          path: '/my/work-attendance',
+          name: 'myWorkAttendance',
+          component: MyWorkAttendance
+        },
+        {
+          path: '/my/salary',
+          name: 'mySalary',
+          component: MySalary
         }
       ]
     },

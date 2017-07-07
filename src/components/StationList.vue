@@ -14,10 +14,12 @@
     <div class="main">
       <el-table :data="tableData">
         <el-table-column prop="customerName" label="平台名称"></el-table-column>
+        <el-table-column prop="tripType" :formatter="typeFormat" label="类型"></el-table-column>
         <el-table-column prop="cityCodeName" label="地区"></el-table-column>
         <el-table-column prop="mainPerson" label="主要负责人"></el-table-column>
         <el-table-column prop="mainPhoneNumber" label="联系电话"></el-table-column>
         <el-table-column prop="mainWeChat" label="微信号"></el-table-column>
+        <el-table-column prop="nickName" label="对接人"></el-table-column>
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="detail(scope)">详情</el-button>
@@ -36,10 +38,10 @@
 <script>
 
   import router from '../router'
-
+  import {setPageIndex} from '../const'
   export default {
     name: 'stationList',
-    data () {
+    data: function () {
       return {
         tableData: null,
         keywords: '',
@@ -49,9 +51,33 @@
         pageCount: 0
       }
     },
-    computed: {},
+    watch: {
+      '$route': 'routeChange'
+    },
     methods: {
-      getTableData () {
+      routeChange: function () {
+        console.log('routeChange', this.$route.params.index)
+        this.currentPage = parseInt(this.$route.params.index)
+        this.getTableData()
+      },
+      typeFormat: function (row, col) {
+        if (row[col.property] === 0 || row[col.property] === '0') {
+          return '未知'
+        } else if (row[col.property] === 1 || row[col.property] === '1') {
+          return '代理商'
+        } else if (row[col.property] === 2 || row[col.property] === '2') {
+          return '站长'
+        } else if (row[col.property] === 3 || row[col.property] === '3') {
+          return '高级站长'
+        } else if (row[col.property] === 4 || row[col.property] === '4') {
+          return '分社社长'
+        } else if (row[col.property] === 5 || row[col.property] === '5') {
+          return '联盟副会长'
+        } else if (row[col.property] === 6 || row[col.property] === '6') {
+          return '盟会长'
+        }
+      },
+      getTableData: function () {
         this.$http.get('/v2/aut/crm/customer/list/master', {
           params: {
             pageSize: this.pageSize,
@@ -72,20 +98,25 @@
           this.$message.error('服务器繁忙！')
         })
       },
-      search () {
+      search: function () {
         this.currentPage = 1
         this.getTableData()
       },
-      pageIndexChange (val) {
+      pageIndexChange: function (val) {
         this.currentPage = val
-        this.getTableData()
+        router.push({name: 'stationList', params: {index: val}})
       },
-      detail (scope) {
-        console.log(scope)
+      detail: function (scope) {
+        console.log(setPageIndex({
+          name: 'stationPageIndex',
+          value: this.currentPage
+        }))
         router.push({name: 'stationDetail', params: {id: scope.row.id}})
       }
     },
-    created () {
+    created: function () {
+      console.log('mounted', this.$route.params.index)
+      this.currentPage = parseInt(this.$route.params.index)
       this.getTableData()
     }
   }

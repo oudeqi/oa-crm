@@ -7,21 +7,37 @@
         <el-breadcrumb-item>个人考勤</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="filter">
-      <div class="l">
-        <el-date-picker v-model="date" @change="handleDateChange" format="yyyy-MM-dd" placeholder="选择日期"> </el-date-picker>
-      </div>
-    </div>
     <div class="main">
       <el-table :data="tableData">
         <el-table-column prop="date" :formatter="dateFormat" label="日期"></el-table-column>
+        <el-table-column prop="date" :formatter="weekFormat" label="星期"></el-table-column>
         <el-table-column prop="nickName" label="姓名"></el-table-column>
-        <el-table-column prop="goToWorkDate" :formatter="dateFormat" label="上班时间"></el-table-column>
-        <el-table-column prop="goOffWorkDate" :formatter="dateFormat" label="下班时间"></el-table-column>
-        <el-table-column prop="isForgotClock" :formatter="boolFormat" label="忘记打卡"></el-table-column>
-        <el-table-column prop="isLeave" :formatter="boolFormat" label="是否请假"></el-table-column>
-        <el-table-column prop="leaveInfo" :formatter="nullFormat" :show-overflow-tooltip="true" label="请假备注"></el-table-column>
+        <el-table-column label="上班时间">
+          <template scope="scope">
+            <span :class="{warning: isLate(scope)}">{{scope.row.goToWorkDate | date("HH:mm:ss")}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="下班时间">
+          <template scope="scope">
+            <span :class="{warning: isLeaveEarly(scope)}">{{scope.row.goOffWorkDate | date("HH:mm:ss")}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="迟到/早退">
+          <template scope="scope">
+            <span :class="{error: hasLeaveDeductMoney(scope.row.lateDeductMoney)}">{{scope.row.lateDeductMoney/100 | currency}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="请假扣除">
+          <template scope="scope">
+            <span :class="{error: hasLeaveDeductMoney(scope.row.leaveDeductMoney)}">{{scope.row.leaveDeductMoney/100 | currency}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="remarks" :formatter="nullFormat" :show-overflow-tooltip="true" label="备注"></el-table-column>
+        <el-table-column label="操作">
+          <template scope="scope">
+            <el-button type="text" @click="edit(scope)">扣款</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="pagination" v-show="pageCount>1">
@@ -29,6 +45,24 @@
                      layout="total, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    <el-dialog @close="reload" title="修改扣款" v-model="isModalOpen" :close-on-click-modal="closeOnClickModal">
+      <el-form :model="opra" label-width="100px">
+        <el-form-item label="扣款类型">
+          <el-radio class="radio" v-model="opra.isLeave" :label="0">迟到早退</el-radio>
+          <el-radio class="radio" v-model="opra.isLeave" :label="1">请假</el-radio>
+        </el-form-item>
+        <el-form-item label="扣款金额">
+          <el-input type="number"  placeholder="请输入扣除金额" v-model="opra.leaveDeductMoney"></el-input>
+        </el-form-item>
+        <el-form-item label="扣款备注">
+          <el-input type="textarea" :rows="8" placeholder="请输入内容" v-model="opra.remarks"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="isModalOpen = false">取 消</el-button>
+        <el-button type="primary" @click="commit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -38,22 +72,19 @@
     name: 'checkWorkAttendanceDetail',
     data () {
       return {
+        isModalOpen: false,
+        closeOnClickModal: false,
         tableData: null,
         keywords: '',
         currentPage: 1,
         pageSize: 20,
         total: null,
         pageCount: 0,
-        date: null
-      }
-    },
-    computed: {
-      timeStamp: function () {
-        if (this.date) {
-          return moment(new Date(this.date)).format('YYYY-MM-DD HH:mm:ss')
-        } else {
-          let month = new Date().getMonth()
-          return moment(new Date().setMonth(month - 1)).format('YYYY-MM-DD HH:mm:ss')
+        opra: {
+          id: null,
+          isLeave: 0, // 0 迟到早退，1 请假
+          leaveDeductMoney: null,
+          remarks: null
         }
       }
     },
@@ -61,6 +92,76 @@
       this.getTableData()
     },
     methods: {
+      edit: function (scope) {
+        console.log(scope)
+        this.opra.id = scope.row.id
+//        if (scope.row.leaveDeductMoney === 0) {
+//          this.opra.leaveDeductMoney = null
+//        } else {
+//          this.opra.leaveDeductMoney = parseInt(scope.row.leaveDeductMoney) / 100
+//        }
+//        this.opra.remarks = scope.row.remarks
+        this.isModalOpen = true
+      },
+      reload () {
+        this.getTableData()
+      },
+      commit: function () {
+        console.log(this.opra)
+        if (!this.opra.leaveDeductMoney || !this.opra.remarks) {
+          this.$message.error('请将内容填写完整')
+          return
+        }
+        this.$http.post('/v2/aut/crm/attendance/deal', {
+          id: this.opra.id,
+          isLeave: this.opra.isLeave,
+          leaveDeductMoney: parseInt(this.opra.leaveDeductMoney) * 100,
+          remarks: this.opra.remarks
+        }).then(res => {
+          console.log('扣款操作成功', res)
+          if (res.body.errMessage) {
+            this.$message.error(res.body.errMessage)
+          } else {
+            this.$message({
+              message: '恭喜你，操作成功',
+              type: 'success'
+            })
+            this.opra.id = null
+            this.opra.isLeave = 0
+            this.opra.leaveDeductMoney = null
+            this.opra.remarks = null
+          }
+        }).catch(res => {
+          console.log('扣款操作失败', res)
+          this.$message.error('服务器繁忙，请重试！')
+        })
+      },
+      isLate: function (scope) {
+        let time = scope.row.goToWorkDate
+        return new Date(time).setHours(9, 33) < time
+      },
+      isLeaveEarly: function (scope) {
+        let time = null
+        if (scope.row.goOffWorkDate) {
+          time = scope.row.goOffWorkDate
+          return new Date(time).setHours(18, 30) > time
+        } else {
+          return false
+        }
+      },
+      hasLeaveDeductMoney: function (value) {
+        return value > 0
+      },
+      currencyFormat: function (row, col) {
+        return '￥' + (row[col.property] / 100).toFixed(2)
+      },
+      weekFormat: function (row, col) {
+        if (row[col.property]) {
+          return moment(row[col.property]).format('dddd')
+        } else {
+          return '无'
+        }
+      },
       handleDateChange: function () {
         this.currentPage = 1
         this.getTableData()
@@ -72,7 +173,7 @@
             pageSize: this.pageSize,
             pageIndex: this.currentPage,
             search: this.keywords,
-            date: this.timeStamp,
+            date: moment(parseInt(this.$route.params.date)).format('YYYY-MM-DD HH:mm:ss'),
             uid: this.$route.params.id
           }
         }).then(res => {
@@ -123,7 +224,12 @@
 </script>
 
 <style lang="scss" scoped>
-
+  .warning{
+    color: red;
+  }
+  .error{
+    color: red;
+  }
   .staff-list{}
   .head-pic{
     max-height: 40px;

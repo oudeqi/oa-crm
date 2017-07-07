@@ -2,7 +2,7 @@
   <div class="visit-appointment">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>设置</el-breadcrumb-item>
+        <el-breadcrumb-item>预约</el-breadcrumb-item>
         <el-breadcrumb-item>回访预约</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -13,9 +13,14 @@
     </div>
     <div class="main">
       <el-table :data="tableData">
-        <el-table-column prop="id" label="#"></el-table-column>
+        <el-table-column prop="serviceName" label="客服" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="typeName" label="回访类型" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="reservationName" label="回访对象" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="lineName" label="线路" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="info" label="描述" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="createDate" label="创建时间" :formatter="dateFormat"></el-table-column>
+        <el-table-column prop="touristPhone" label="联系电话" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="wechat" label="微信" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="createDate" label="创建时间" :formatter="dateFormat" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" min-width="130">
           <template scope="scope">
             <el-button type="text" @click="openDetailDialog(scope)">详情</el-button>
