@@ -19,6 +19,7 @@
           <li><span>员工姓名：</span><span>{{staffInfo.nickName}}</span></li>
           <li><span>员工工号：</span><span>{{staffInfo.serialNumber}}</span></li>
           <li><span>员工角色：</span><span>{{role}}</span></li>
+          <li><span>员工状态：</span><span>{{staffInfo.workStatus==1?'试用':staffInfo.workStatus==2?'转正':'未设置'}}</span></li>
           <li><span>电话号码：</span><span>{{staffInfo.phoneNumber}}</span></li>
           <li><span>基本薪资：</span><span>{{staffInfo.baseSalary / 100}}</span></li>
           <li><span>入职时间：</span><span>{{staffInfo.joinDate | date('YYYY-MM-DD HH:mm:ss')}}</span></li>

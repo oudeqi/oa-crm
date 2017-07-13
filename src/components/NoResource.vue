@@ -16,7 +16,11 @@
   export default {
     name: 'noResource',
     created: function () {
-      this.$alert('登录超时，请重新登录！', '提示', {
+      let msg = '登录超时，请重新登录！'
+      if (this.$route.params.code === 2 || this.$route.params.code === '2') {
+        msg = '角色无权限，请联系管理员添加'
+      }
+      this.$alert(msg, '提示', {
         confirmButtonText: '确定',
         callback: action => {
           router.push('/login')

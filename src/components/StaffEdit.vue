@@ -32,6 +32,13 @@
                            filterable v-model="id"
                            @change="handleCityCodeChange" :props="{value:'id',label:'name',children:'data'}"></el-cascader>
             </el-form-item>
+            <el-form-item label="员工状态">
+              <el-radio-group v-model="staffInfo.workStatus">
+                <el-radio :label="1">试用</el-radio>
+                <el-radio :label="2">转正</el-radio>
+                <el-radio v-if="staffInfo.workStatus==0" disabled :label="0">未设置</el-radio>
+              </el-radio-group>
+            </el-form-item>
             <el-form-item label="电话号码">
               <el-input v-model="staffInfo.phoneNumber"></el-input>
             </el-form-item>
@@ -148,6 +155,15 @@
         })
       },
       submitForm () {
+        console.log(this.staffInfo)
+        if (!this.staffInfo.nickName || !this.staffInfo.phoneNumber || !this.staffInfo.serialNumber || !this.staffInfo.roleId || !this.staffInfo.joinDate || !this.staffInfo.baseSalary) {
+          this.$message.error('信息填写不完整')
+          return false
+        }
+        if (this.staffInfo.workStatus === 0 || this.staffInfo.workStatus === '0') {
+          this.$message.error('请设置员工状态')
+          return false
+        }
         this.$confirm('确定要对员工信息进行编辑吗, 是否继续？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

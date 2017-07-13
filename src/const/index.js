@@ -3,7 +3,7 @@
  */
 
 const appHost = function () {
-  // return 'http://192.168.10.36:8080'
+  // return 'http://192.168.10.43:8080'
   return 'http://crm.difanglian.com'
 }
 

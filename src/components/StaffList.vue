@@ -23,6 +23,7 @@
         </el-table-column>
         <el-table-column prop="serialNumber" label="工号"></el-table-column>
         <el-table-column prop="nickName" label="姓名"></el-table-column>
+        <el-table-column prop="workStatus" label="状态" :formatter="statusFormat"></el-table-column>
         <el-table-column prop="phoneNumber" label="电话号码"></el-table-column>
         <el-table-column prop="joinDate" label="入职时间" :formatter="dateFormat"></el-table-column>
         <el-table-column label="操作" min-width="130">
@@ -100,6 +101,15 @@
           return moment(row[col.property]).format('YYYY-MM-DD')
         } else {
           return '无'
+        }
+      },
+      statusFormat: function (row, col) {
+        if (row[col.property] === 0) {
+          return '未设置'
+        } else if (row[col.property] === 1) {
+          return '试用'
+        } else if (row[col.property] === 2) {
+          return '转正'
         }
       },
       detail: function (scope) {

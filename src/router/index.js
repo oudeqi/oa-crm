@@ -56,7 +56,7 @@ export default new Router({
       component: Login
     },
     {
-      path: '/no-resource',
+      path: '/no-resource/:code',
       name: 'noResource',
       component: NoResource
     },

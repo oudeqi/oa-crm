@@ -132,8 +132,9 @@
           this.$message.error('服务器繁忙')
         })
       },
-      tokenWrong () {
-        router.push('/no-resource')
+      tokenWrong (code) {
+        // code 1 token, 2 no rights
+        router.push('/no-resource/' + code)
       },
       menuSelect () {
         let path = this.$route.path.split('/')
@@ -185,33 +186,40 @@
         if (res.body.errMessage) {
           router.push('/login')
         } else {
-          next(vm => {
-            setUser({
-              id: res.body.data.uid,
-              name: res.body.data.nickName,
-              headPic: res.body.data.headIconUrl,
-              phone: res.body.data.phoneNumber
+          if (res.body.data.userMenus && res.body.data.userMenus.length === 0) {
+            console.log('角色无权限', res)
+            next(vm => {
+              vm.tokenWrong(2)
             })
-            vm.headIconUrl = res.body.data.headIconUrl
-            vm.nickName = res.body.data.nickName
-            vm.phoneNumber = res.body.data.phoneNumber
-            let userMenus = res.body.data.userMenus
-            userMenus.forEach(value => {
-              value.id = value.id + ''
-              if (!!value.menus && value.menus.length >= 0) {
-                value.menus.forEach((val) => {
-                  val.id = val.id + ''
-                })
-              }
+          } else {
+            next(vm => {
+              setUser({
+                id: res.body.data.uid,
+                name: res.body.data.nickName,
+                headPic: res.body.data.headIconUrl,
+                phone: res.body.data.phoneNumber
+              })
+              vm.headIconUrl = res.body.data.headIconUrl
+              vm.nickName = res.body.data.nickName
+              vm.phoneNumber = res.body.data.phoneNumber
+              let userMenus = res.body.data.userMenus
+              userMenus.forEach(value => {
+                value.id = value.id + ''
+                if (!!value.menus && value.menus.length >= 0) {
+                  value.menus.forEach((val) => {
+                    val.id = val.id + ''
+                  })
+                }
+              })
+              vm.userMenus = userMenus
+              vm.menuSelect()
             })
-            vm.userMenus = userMenus
-            vm.menuSelect()
-          })
+          }
         }
       }).catch(function (res) {
         console.log('token 登录出错', res)
         next(vm => {
-          vm.tokenWrong()
+          vm.tokenWrong(1)
         })
       })
     }

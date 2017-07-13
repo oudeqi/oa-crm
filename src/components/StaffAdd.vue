@@ -28,6 +28,12 @@
                            filterable v-model="id"
                            @change="handleCityCodeChange" :props="{value:'id',label:'name',children:'data'}"></el-cascader>
             </el-form-item>
+            <el-form-item label="员工状态">
+              <el-radio-group v-model="staffInfo.workStatus">
+                <el-radio :label="1">试用</el-radio>
+                <el-radio :label="2">转正</el-radio>
+              </el-radio-group>
+            </el-form-item>
             <el-form-item label="电话号码">
               <el-input v-model="staffInfo.phoneNumber" placeholder="请输入电话号码"></el-input>
             </el-form-item>
@@ -67,6 +73,7 @@
           roleId: null,
           password: '123456',
           groupId: null,
+          workStatus: 1, // 1 试用，2转正
           deptId: null,
           level: 0,
           superiorId: 0,
@@ -145,6 +152,7 @@
             password: this.staffInfo.password,
             groupId: this.staffInfo.groupId,
             deptId: this.staffInfo.deptId,
+            workStatus: this.staffInfo.workStatus,
             level: this.staffInfo.level,
             superiorId: this.staffInfo.superiorId,
             createDate: this.staffInfo.createDate,
