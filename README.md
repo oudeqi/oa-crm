@@ -2,7 +2,7 @@
 
 > 如果不想使用 css modules功能，只需在不需要模块化的样式外面包裹一层 :global{}
 ``` bash
-  /* .header 类不会被模块化 */
+  /*.header 类不会被模块化*/
   :global{
     .header{ 
       line-height: 40px;
