@@ -1,6 +1,16 @@
 # ertai-oa-crm
 
-> A Vue.js project
+> 如果不想使用vue-cli提供的 css modules功能，只需在不需要模块化的样式外面包裹一层 :global{}
+``` bash
+  :global{
+    .header{ //.header 类不会被模块化
+      line-height: 40px;
+      height: 40px;
+      background-color: skyblue;
+      color: #fff;
+    }
+  }
+```
 
 ## Build Setup
 
